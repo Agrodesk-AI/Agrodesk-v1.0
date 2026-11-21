@@ -40,3 +40,11 @@
 - **Icons:** `lucide-react`.
 - **Shell:** bottom tab bar (mobile) with FAB-style `+` for Quick Add; sidebar (md+).
 - **Deferred to E3.1:** offline queue via service worker + IndexedDB, next-intl Marathi/Hindi catalogs, Playwright e2e tests, Android push.
+
+## 2026-11-22: E3.1 offline + i18n + e2e decisions
+- **Offline queue:** IndexedDB via `idb`, store `queued_requests`. Only queues `POST /v1/leads` and `POST /v1/tasks/{id}/outcome` — reads stay online so the UI never shows stale data.
+- **Replay triggers:** window `online` event, `document.visibilitychange` to `visible`. Service worker registers a `sync` event (`agrodesk-replay` tag) that signals the window to replay when the browser supports Background Sync; iOS Safari relies on the visibility-change path.
+- **Error handling:** 4xx (except 408/429) drops the queued item — the user will re-do; network errors and 5xx stay in the queue with a `retries` counter. OfflineIndicator shows a top chip with the queue length.
+- **i18n:** `next-intl` with **no URL locale routing**. `NextIntlClientProvider` wraps the whole app in a client provider that reads `localStorage['agrodesk.locale']`, falling back to the browser's accepted language, then `en`. The language picker lives on `/profile`.
+- **Catalogs:** machine-authored `src/messages/{en,mr,hi}.json`. Needs a native-speaker review before pilot — tracked in `docs/PROGRESS.md`.
+- **Playwright:** smoke test skipped unless `E2E_OWNER_FIXED_CODE` is set; relies on a live dev-mode backend with a seeded owner. Full e2e with fixtures lands later.

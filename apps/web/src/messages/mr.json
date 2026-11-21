@@ -1,0 +1,123 @@
+{
+  "app": { "name": "अ‍ॅग्रोडेस्क" },
+  "nav": { "today": "आज", "leads": "लीड्स", "add": "नवीन", "profile": "प्रोफाइल" },
+  "common": {
+    "loading": "लोड होत आहे…",
+    "save": "जतन करा",
+    "saving": "जतन होत आहे…",
+    "cancel": "रद्द करा",
+    "signOut": "साइन आउट",
+    "willSync": "ऑनलाइन झाल्यावर सिंक होईल",
+    "offline": "ऑफलाइन — बदल रांगेत आहेत",
+    "role": "भूमिका"
+  },
+  "login": {
+    "title": "अ‍ॅग्रोडेस्क",
+    "subtitle": "मोबाइल नंबरने साइन इन करा",
+    "phonePlaceholder": "९८७६५ ४३२१०",
+    "sendCode": "कोड पाठवा",
+    "sending": "पाठवत आहे…",
+    "codeHint": "{phone} वर ६-अंकी कोड पाठवला आहे.",
+    "verify": "तपासा",
+    "verifying": "तपासत आहे…",
+    "changeNumber": "नंबर बदला",
+    "errors": {
+      "generic": "काहीतरी चुकले.",
+      "badCode": "कोड चुकीचा आहे."
+    }
+  },
+  "today": {
+    "title": "आजची कामे",
+    "empty": "आज कोणतेही काम नाही",
+    "emptyBody": "नवीन लीड्स किंवा फॉलो-अप येथे दिसतील.",
+    "addLead": "लीड जोडा",
+    "markOutcome": "निकाल नोंदवा",
+    "openLead": "लीड उघडा",
+    "due": "वेळ: {time}"
+  },
+  "leads": {
+    "title": "लीड्स",
+    "addBtn": "+ लीड जोडा",
+    "filters": { "all": "सर्व" },
+    "empty": "अजून लीड्स नाहीत",
+    "emptyBody": "लीड जोडून सुरुवात करा.",
+    "nextAt": "पुढील: {at}",
+    "noModel": "मॉडेल नमूद नाही"
+  },
+  "quickAdd": {
+    "title": "नवीन लीड",
+    "phone": "मोबाइल",
+    "name": "नाव",
+    "model": "कोणता ट्रॅक्टर हवा",
+    "source": "स्रोत",
+    "nextAction": "पुढील कृती",
+    "add": "लीड जोडा",
+    "adding": "जोडत आहे…"
+  },
+  "leadDetail": {
+    "model": "मॉडेल",
+    "source": "स्रोत",
+    "nextAt": "पुढील कृती",
+    "timeline": "टाइमलाइन",
+    "none": "अजून काहीही नाही.",
+    "back": "लीड्स",
+    "call": "कॉल",
+    "whatsapp": "व्हॉट्सअ‍ॅप",
+    "moveStage": "टप्पा बदला"
+  },
+  "transition": {
+    "title": "टप्पा बदला",
+    "terminal": "ही लीड अंतिम टप्प्यात आहे ({stage}).",
+    "reasonLabel": "गमावल्याचे कारण",
+    "reasonPlaceholder": "दुसरीकडून घेतला",
+    "nextActionLabel": "पुढील कृती"
+  },
+  "outcome": {
+    "title": "निकाल नोंदवा",
+    "options": {
+      "not_picked": "फोन उचलला नाही",
+      "interested": "रस आहे",
+      "visit_planned": "भेट ठरवली",
+      "price_issue": "किंमतीचा प्रश्न",
+      "bought_elsewhere": "दुसरीकडून घेतला",
+      "not_interested": "रस नाही"
+    }
+  },
+  "stage": {
+    "new": "नवीन",
+    "contacted": "संपर्क झाला",
+    "qualified": "पात्र",
+    "visit_planned": "भेट ठरली",
+    "negotiation": "बोलणी सुरू",
+    "won": "यशस्वी",
+    "lost": "गमावला"
+  },
+  "source": {
+    "facebook": "फेसबुक",
+    "walk_in": "दुकानात आला",
+    "referral": "रेफरल",
+    "oem": "कंपनीकडून",
+    "other": "इतर"
+  },
+  "score": { "hot": "हॉट", "warm": "वॉर्म", "dead": "बंद" },
+  "eventType": {
+    "created": "लीड तयार झाली",
+    "stage_changed": "टप्पा बदलला",
+    "assigned": "मालक बदलला",
+    "next_action_scheduled": "पुढील कृती ठरवली",
+    "note": "नोंद",
+    "call_made": "कॉल",
+    "task_completed": "कार्य पूर्ण",
+    "opted_out": "ऑप्ट आउट"
+  },
+  "nextActionPreset": {
+    "today6pm": "आज संध्या. ६",
+    "tomorrow10am": "उद्या स. १०",
+    "in3Days": "३ दिवसांत",
+    "nextWeek": "पुढच्या आठवड्यात"
+  },
+  "profile": {
+    "title": "प्रोफाइल",
+    "language": "भाषा"
+  }
+}

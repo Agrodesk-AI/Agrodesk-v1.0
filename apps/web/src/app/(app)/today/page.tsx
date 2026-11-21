@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Phone, MessageCircle } from "lucide-react";
 import { apiJson } from "@/lib/api";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,8 @@ interface TaskWithLead {
 }
 
 export default function TodayPage() {
+  const t = useTranslations("today");
+  const common = useTranslations("common");
   const [items, setItems] = useState<TaskWithLead[]>([]);
   const [loading, setLoading] = useState(true);
   const [outcomeFor, setOutcomeFor] = useState<Task | null>(null);
@@ -26,13 +29,13 @@ export default function TodayPage() {
     try {
       const tasks = await apiJson.get<Task[]>("/v1/tasks/today");
       const enriched = await Promise.all(
-        tasks.map(async (t) => {
-          if (!t.lead_id) return { task: t, lead: null };
+        tasks.map(async (task) => {
+          if (!task.lead_id) return { task, lead: null };
           try {
-            const lead = await apiJson.get<Lead>(`/v1/leads/${t.lead_id}`);
-            return { task: t, lead };
+            const lead = await apiJson.get<Lead>(`/v1/leads/${task.lead_id}`);
+            return { task, lead };
           } catch {
-            return { task: t, lead: null };
+            return { task, lead: null };
           }
         }),
       );
@@ -44,15 +47,15 @@ export default function TodayPage() {
 
   useEffect(() => { load(); }, [load]);
 
-  if (loading) return <p className="text-muted">Loading…</p>;
+  if (loading) return <p className="text-muted">{common("loading")}</p>;
   if (items.length === 0)
     return (
       <Empty
-        title="No tasks today"
-        body="New leads or follow-ups will show up here."
+        title={t("empty")}
+        body={t("emptyBody")}
         action={
           <Link href="/leads/new">
-            <Button>Add a lead</Button>
+            <Button>{t("addLead")}</Button>
           </Link>
         }
       />
@@ -60,34 +63,19 @@ export default function TodayPage() {
 
   return (
     <>
-      <h1 className="mb-3 text-xl font-semibold">Today</h1>
+      <h1 className="mb-3 text-xl font-semibold">{t("title")}</h1>
       <div className="space-y-3">
         {items.map(({ task, lead }) => (
-          <Card key={task.id} className="space-y-3">
+          <Card key={task.id} className="space-y-3" data-testid="today-task">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="font-medium">{lead?.model_interest ?? "Follow up"}</p>
-                <p className="text-sm text-muted">Due {fmtTime(task.due_at)}</p>
+                <p className="font-medium">{lead?.model_interest ?? t("openLead")}</p>
+                <p className="text-sm text-muted">{t("due", { time: fmtTime(task.due_at) })}</p>
               </div>
             </div>
-            {lead && (
-              <div className="flex flex-wrap items-center gap-2">
-                <a
-                  href={`tel:${lead.customer_id ? "" : ""}`}
-                  className="hidden"
-                  aria-hidden
-                />
-                <Link
-                  href={`/leads/${lead.id}`}
-                  className="text-sm font-medium text-primary hover:underline"
-                >
-                  Open lead
-                </Link>
-              </div>
-            )}
             <div className="flex items-center gap-2">
               <Button variant="outline" onClick={() => setOutcomeFor(task)} className="flex-1">
-                Mark outcome
+                {t("markOutcome")}
               </Button>
               {lead && (
                 <>

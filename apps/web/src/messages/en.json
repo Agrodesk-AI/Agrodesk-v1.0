@@ -1,0 +1,123 @@
+{
+  "app": { "name": "Agrodesk" },
+  "nav": { "today": "Today", "leads": "Leads", "add": "Add", "profile": "Profile" },
+  "common": {
+    "loading": "Loading…",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "signOut": "Sign out",
+    "willSync": "Will sync when online",
+    "offline": "Offline — changes are queued",
+    "role": "Role"
+  },
+  "login": {
+    "title": "Agrodesk",
+    "subtitle": "Sign in with your phone number",
+    "phonePlaceholder": "98765 43210",
+    "sendCode": "Send code",
+    "sending": "Sending…",
+    "codeHint": "We sent a 6-digit code to {phone}.",
+    "verify": "Verify",
+    "verifying": "Verifying…",
+    "changeNumber": "Change number",
+    "errors": {
+      "generic": "Something went wrong.",
+      "badCode": "Invalid code."
+    }
+  },
+  "today": {
+    "title": "Today",
+    "empty": "No tasks today",
+    "emptyBody": "New leads or follow-ups will show up here.",
+    "addLead": "Add a lead",
+    "markOutcome": "Mark outcome",
+    "openLead": "Open lead",
+    "due": "Due {time}"
+  },
+  "leads": {
+    "title": "Leads",
+    "addBtn": "+ Add lead",
+    "filters": { "all": "All" },
+    "empty": "No leads yet",
+    "emptyBody": "Start by adding a lead.",
+    "nextAt": "Next: {at}",
+    "noModel": "No model noted"
+  },
+  "quickAdd": {
+    "title": "New lead",
+    "phone": "Phone",
+    "name": "Name",
+    "model": "Model of interest",
+    "source": "Source",
+    "nextAction": "Next action",
+    "add": "Add lead",
+    "adding": "Adding…"
+  },
+  "leadDetail": {
+    "model": "Model",
+    "source": "Source",
+    "nextAt": "Next action",
+    "timeline": "Timeline",
+    "none": "Nothing yet.",
+    "back": "Leads",
+    "call": "Call",
+    "whatsapp": "WhatsApp",
+    "moveStage": "Move stage"
+  },
+  "transition": {
+    "title": "Move stage",
+    "terminal": "This lead is in a terminal stage ({stage}).",
+    "reasonLabel": "Reason for lost",
+    "reasonPlaceholder": "Bought elsewhere",
+    "nextActionLabel": "Next action"
+  },
+  "outcome": {
+    "title": "Mark outcome",
+    "options": {
+      "not_picked": "Not picked",
+      "interested": "Interested",
+      "visit_planned": "Visit planned",
+      "price_issue": "Price issue",
+      "bought_elsewhere": "Bought elsewhere",
+      "not_interested": "Not interested"
+    }
+  },
+  "stage": {
+    "new": "New",
+    "contacted": "Contacted",
+    "qualified": "Qualified",
+    "visit_planned": "Visit planned",
+    "negotiation": "Negotiation",
+    "won": "Won",
+    "lost": "Lost"
+  },
+  "source": {
+    "facebook": "Facebook",
+    "walk_in": "Walk in",
+    "referral": "Referral",
+    "oem": "OEM",
+    "other": "Other"
+  },
+  "score": { "hot": "Hot", "warm": "Warm", "dead": "Dead" },
+  "eventType": {
+    "created": "Lead created",
+    "stage_changed": "Stage changed",
+    "assigned": "Owner changed",
+    "next_action_scheduled": "Next action scheduled",
+    "note": "Note",
+    "call_made": "Call",
+    "task_completed": "Task completed",
+    "opted_out": "Opted out"
+  },
+  "nextActionPreset": {
+    "today6pm": "Today 6pm",
+    "tomorrow10am": "Tomorrow 10am",
+    "in3Days": "In 3 days",
+    "nextWeek": "Next week"
+  },
+  "profile": {
+    "title": "Profile",
+    "language": "Language"
+  }
+}

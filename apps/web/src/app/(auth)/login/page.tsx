@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -12,6 +13,7 @@ import type { TokenPair } from "@/lib/types";
 type Step = "phone" | "code";
 
 export default function LoginPage() {
+  const t = useTranslations("login");
   const router = useRouter();
   const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
@@ -26,7 +28,7 @@ export default function LoginPage() {
       await api("/v1/auth/otp/request", { method: "POST", body: JSON.stringify({ phone }) });
       setStep("code");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to send code");
+      setError(e instanceof Error ? e.message : t("errors.generic"));
     } finally {
       setBusy(false);
     }
@@ -43,39 +45,41 @@ export default function LoginPage() {
       authStore.set(tokens);
       router.replace("/today");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Invalid code");
+      setError(e instanceof Error ? e.message : t("errors.badCode"));
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <Card className="space-y-4">
+    <Card className="space-y-4" data-testid="login-card">
       <div className="space-y-1">
-        <h1 className="text-2xl font-semibold">Agrodesk</h1>
-        <p className="text-sm text-muted">Sign in with your phone number</p>
+        <h1 className="text-2xl font-semibold">{t("title")}</h1>
+        <p className="text-sm text-muted">{t("subtitle")}</p>
       </div>
       {step === "phone" ? (
         <>
           <Input
             inputMode="numeric"
-            placeholder="98765 43210"
+            placeholder={t("phonePlaceholder")}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             autoFocus
+            data-testid="login-phone"
           />
           <Button
             onClick={sendOtp}
             disabled={phone.replace(/\D/g, "").length < 10 || busy}
             className="w-full"
             size="lg"
+            data-testid="login-send"
           >
-            {busy ? "Sending…" : "Send code"}
+            {busy ? t("sending") : t("sendCode")}
           </Button>
         </>
       ) : (
         <>
-          <p className="text-sm text-muted">We sent a 6-digit code to {phone}.</p>
+          <p className="text-sm text-muted">{t("codeHint", { phone })}</p>
           <Input
             inputMode="numeric"
             maxLength={6}
@@ -84,16 +88,27 @@ export default function LoginPage() {
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
             autoFocus
             className="text-center tracking-[0.5em]"
+            data-testid="login-code"
           />
-          <Button onClick={verify} disabled={code.length !== 6 || busy} className="w-full" size="lg">
-            {busy ? "Verifying…" : "Verify"}
+          <Button
+            onClick={verify}
+            disabled={code.length !== 6 || busy}
+            className="w-full"
+            size="lg"
+            data-testid="login-verify"
+          >
+            {busy ? t("verifying") : t("verify")}
           </Button>
           <button
             type="button"
-            onClick={() => { setStep("phone"); setCode(""); setError(null); }}
+            onClick={() => {
+              setStep("phone");
+              setCode("");
+              setError(null);
+            }}
             className="w-full text-sm text-muted hover:underline"
           >
-            Change number
+            {t("changeNumber")}
           </button>
         </>
       )}

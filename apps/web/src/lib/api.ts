@@ -1,6 +1,7 @@
 "use client";
 
 import { authStore } from "./auth";
+import { enqueue, isQueueable, QueuedError } from "./offline-queue";
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE || "/api/backend";
 
@@ -10,21 +11,33 @@ export class ApiError extends Error {
   }
 }
 
+/** Plain fetch with Bearer auth — used by the queue replay so we don't re-queue on replay. */
+export async function apiRaw(input: RequestInfo | URL, init: RequestInit = {}): Promise<Response> {
+  const headers = new Headers(init.headers);
+  if (!headers.has("Content-Type")) headers.set("Content-Type", "application/json");
+  const token = authStore.access;
+  if (token && !headers.has("Authorization")) headers.set("Authorization", `Bearer ${token}`);
+  return fetch(input, { ...init, headers });
+}
+
 async function refresh(): Promise<boolean> {
   const r = authStore.refresh;
   if (!r) return false;
-  const res = await fetch(`${BASE}/v1/auth/refresh`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refresh_token: r }),
-  });
-  if (!res.ok) {
-    authStore.clear();
+  try {
+    const res = await fetch(`${BASE}/v1/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: r }),
+    });
+    if (!res.ok) {
+      authStore.clear();
+      return false;
+    }
+    authStore.set(await res.json());
+    return true;
+  } catch {
     return false;
   }
-  const tokens = await res.json();
-  authStore.set(tokens);
-  return true;
 }
 
 export async function api<T = unknown>(
@@ -32,12 +45,26 @@ export async function api<T = unknown>(
   init: RequestInit = {},
   retry = true,
 ): Promise<T> {
+  const method = (init.method || "GET").toUpperCase();
+  const body = typeof init.body === "string" ? init.body : undefined;
   const headers = new Headers(init.headers);
   headers.set("Content-Type", "application/json");
   const token = authStore.access;
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
-  const res = await fetch(`${BASE}${path}`, { ...init, headers });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE}${path}`, { ...init, headers });
+  } catch (e) {
+    if (isQueueable(method, path) && body !== undefined) {
+      const headerObj: Record<string, string> = {};
+      headers.forEach((v, k) => (headerObj[k] = v));
+      const row = await enqueue({ url: `${BASE}${path}`, method, body, headers: headerObj });
+      throw new QueuedError(row.id);
+    }
+    throw e;
+  }
+
   if (res.status === 401 && retry) {
     if (await refresh()) return api<T>(path, init, false);
   }
@@ -63,3 +90,5 @@ export const apiJson = {
     api<T>(p, { method: "PATCH", body: JSON.stringify(body) }),
   del: <T>(p: string) => api<T>(p, { method: "DELETE" }),
 };
+
+export { QueuedError };

@@ -1,0 +1,123 @@
+{
+  "app": { "name": "एग्रोडेस्क" },
+  "nav": { "today": "आज", "leads": "लीड्स", "add": "नया", "profile": "प्रोफ़ाइल" },
+  "common": {
+    "loading": "लोड हो रहा है…",
+    "save": "सहेजें",
+    "saving": "सहेजा जा रहा है…",
+    "cancel": "रद्द करें",
+    "signOut": "साइन आउट",
+    "willSync": "ऑनलाइन होने पर सिंक होगा",
+    "offline": "ऑफ़लाइन — बदलाव क़तार में हैं",
+    "role": "भूमिका"
+  },
+  "login": {
+    "title": "एग्रोडेस्क",
+    "subtitle": "मोबाइल नंबर से साइन इन करें",
+    "phonePlaceholder": "98765 43210",
+    "sendCode": "कोड भेजें",
+    "sending": "भेजा जा रहा है…",
+    "codeHint": "{phone} पर 6-अंकों का कोड भेजा गया है.",
+    "verify": "सत्यापित करें",
+    "verifying": "सत्यापित हो रहा है…",
+    "changeNumber": "नंबर बदलें",
+    "errors": {
+      "generic": "कुछ गड़बड़ हुई.",
+      "badCode": "ग़लत कोड."
+    }
+  },
+  "today": {
+    "title": "आज के काम",
+    "empty": "आज कोई काम नहीं",
+    "emptyBody": "नई लीड्स या फ़ॉलो-अप यहाँ दिखेंगी.",
+    "addLead": "लीड जोड़ें",
+    "markOutcome": "नतीजा दर्ज करें",
+    "openLead": "लीड खोलें",
+    "due": "समय: {time}"
+  },
+  "leads": {
+    "title": "लीड्स",
+    "addBtn": "+ लीड जोड़ें",
+    "filters": { "all": "सभी" },
+    "empty": "अभी कोई लीड नहीं",
+    "emptyBody": "लीड जोड़कर शुरू करें.",
+    "nextAt": "अगला: {at}",
+    "noModel": "मॉडल दर्ज नहीं"
+  },
+  "quickAdd": {
+    "title": "नई लीड",
+    "phone": "मोबाइल",
+    "name": "नाम",
+    "model": "कौन सा ट्रैक्टर",
+    "source": "स्रोत",
+    "nextAction": "अगला कदम",
+    "add": "लीड जोड़ें",
+    "adding": "जोड़ा जा रहा है…"
+  },
+  "leadDetail": {
+    "model": "मॉडल",
+    "source": "स्रोत",
+    "nextAt": "अगला कदम",
+    "timeline": "टाइमलाइन",
+    "none": "अभी कुछ नहीं.",
+    "back": "लीड्स",
+    "call": "कॉल",
+    "whatsapp": "व्हाट्सऐप",
+    "moveStage": "स्टेज बदलें"
+  },
+  "transition": {
+    "title": "स्टेज बदलें",
+    "terminal": "यह लीड अंतिम स्टेज में है ({stage}).",
+    "reasonLabel": "हारने की वजह",
+    "reasonPlaceholder": "कहीं और से ख़रीदा",
+    "nextActionLabel": "अगला कदम"
+  },
+  "outcome": {
+    "title": "नतीजा दर्ज करें",
+    "options": {
+      "not_picked": "फ़ोन नहीं उठाया",
+      "interested": "दिलचस्पी है",
+      "visit_planned": "मुलाक़ात तय",
+      "price_issue": "दाम का मामला",
+      "bought_elsewhere": "कहीं और से ख़रीदा",
+      "not_interested": "दिलचस्पी नहीं"
+    }
+  },
+  "stage": {
+    "new": "नया",
+    "contacted": "संपर्क हुआ",
+    "qualified": "योग्य",
+    "visit_planned": "मुलाक़ात तय",
+    "negotiation": "बातचीत चल रही",
+    "won": "सफल",
+    "lost": "हारा"
+  },
+  "source": {
+    "facebook": "फेसबुक",
+    "walk_in": "दुकान पर आया",
+    "referral": "रेफ़रल",
+    "oem": "कंपनी से",
+    "other": "अन्य"
+  },
+  "score": { "hot": "हॉट", "warm": "वार्म", "dead": "बंद" },
+  "eventType": {
+    "created": "लीड बनी",
+    "stage_changed": "स्टेज बदला",
+    "assigned": "मालिक बदला",
+    "next_action_scheduled": "अगला कदम तय",
+    "note": "नोट",
+    "call_made": "कॉल",
+    "task_completed": "कार्य पूरा",
+    "opted_out": "ऑप्ट आउट"
+  },
+  "nextActionPreset": {
+    "today6pm": "आज शाम 6",
+    "tomorrow10am": "कल सु. 10",
+    "in3Days": "3 दिन में",
+    "nextWeek": "अगले हफ़्ते"
+  },
+  "profile": {
+    "title": "प्रोफ़ाइल",
+    "language": "भाषा"
+  }
+}

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Phone, MessageCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { apiJson } from "@/lib/api";
@@ -14,6 +15,9 @@ import { fmtDateTime, fmtPhone } from "@/lib/dates";
 import type { Customer, Lead, LeadEvent } from "@/lib/types";
 
 export default function LeadDetail() {
+  const t = useTranslations("leadDetail");
+  const stageT = useTranslations("stage");
+  const common = useTranslations("common");
   const { id } = useParams<{ id: string }>();
   const [lead, setLead] = useState<Lead | null>(null);
   const [customer, setCustomer] = useState<Customer | null>(null);
@@ -39,8 +43,8 @@ export default function LeadDetail() {
 
   useEffect(() => { load(); }, [load]);
 
-  if (loading) return <p className="text-muted">Loading…</p>;
-  if (!lead || !customer) return <p className="text-muted">Lead not found.</p>;
+  if (loading) return <p className="text-muted">{common("loading")}</p>;
+  if (!lead || !customer) return <p className="text-muted">—</p>;
 
   const phoneHref = `tel:${customer.phone}`;
   const waHref = `https://wa.me/${customer.phone.replace(/\D/g, "")}`;
@@ -48,44 +52,40 @@ export default function LeadDetail() {
   return (
     <>
       <Link href="/leads" className="mb-3 inline-flex items-center gap-1 text-sm text-muted hover:text-text">
-        <ArrowLeft className="h-4 w-4" /> Leads
+        <ArrowLeft className="h-4 w-4" /> {t("back")}
       </Link>
-      <Card className="space-y-2">
+      <Card className="space-y-2" data-testid="lead-card">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h1 className="text-xl font-semibold">{customer.name}</h1>
             <p className="text-sm text-muted">{fmtPhone(customer.phone)}</p>
           </div>
-          <Badge tone={lead.stage === "won" ? "primary" : lead.stage === "lost" ? "dead" : "default"}>
-            {lead.stage.replace("_", " ")}
+          <Badge
+            tone={lead.stage === "won" ? "primary" : lead.stage === "lost" ? "dead" : "default"}
+            data-testid="lead-stage"
+          >
+            {stageT(lead.stage)}
           </Badge>
         </div>
-        <p className="text-sm">
-          <span className="text-muted">Model: </span>
-          {lead.model_interest ?? "—"}
-        </p>
-        <p className="text-sm">
-          <span className="text-muted">Source: </span>
-          {lead.source}
-        </p>
-        <p className="text-sm">
-          <span className="text-muted">Next action: </span>
-          {fmtDateTime(lead.next_action_at)}
-        </p>
+        <p className="text-sm"><span className="text-muted">{t("model")}: </span>{lead.model_interest ?? "—"}</p>
+        <p className="text-sm"><span className="text-muted">{t("source")}: </span>{lead.source}</p>
+        <p className="text-sm"><span className="text-muted">{t("nextAt")}: </span>{fmtDateTime(lead.next_action_at)}</p>
       </Card>
 
-      <h2 className="mt-5 mb-2 text-sm font-semibold uppercase tracking-wide text-muted">Timeline</h2>
+      <h2 className="mt-5 mb-2 text-sm font-semibold uppercase tracking-wide text-muted">{t("timeline")}</h2>
       <Timeline events={events} />
 
       <div className="fixed inset-x-0 bottom-16 z-30 border-t border-border bg-surface/95 px-4 py-3 backdrop-blur md:static md:mt-6 md:border-0 md:bg-transparent md:p-0">
         <div className="mx-auto flex max-w-5xl items-center gap-2">
           <a href={phoneHref} className="flex-1">
-            <Button variant="outline" className="w-full"><Phone className="h-4 w-4" /> Call</Button>
+            <Button variant="outline" className="w-full"><Phone className="h-4 w-4" /> {t("call")}</Button>
           </a>
           <a href={waHref} target="_blank" rel="noreferrer" className="flex-1">
-            <Button variant="outline" className="w-full"><MessageCircle className="h-4 w-4" /> WhatsApp</Button>
+            <Button variant="outline" className="w-full"><MessageCircle className="h-4 w-4" /> {t("whatsapp")}</Button>
           </a>
-          <Button onClick={() => setTransitionOpen(true)} className="flex-1">Move stage</Button>
+          <Button onClick={() => setTransitionOpen(true)} className="flex-1" data-testid="open-transition">
+            {t("moveStage")}
+          </Button>
         </div>
       </div>
 

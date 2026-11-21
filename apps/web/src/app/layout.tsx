@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { I18nProvider } from "@/lib/i18n/provider";
+import { OfflineIndicator } from "@/components/offline-indicator";
 
 export const metadata: Metadata = {
   title: "Agrodesk",
@@ -18,7 +20,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        {children}
+        <I18nProvider>
+          <OfflineIndicator />
+          {children}
+        </I18nProvider>
         <script
           dangerouslySetInnerHTML={{
             __html:
