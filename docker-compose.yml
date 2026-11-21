@@ -16,3 +16,13 @@ services:
     ports: ["6379:6379"]
 volumes:
   pgdata:
+  web:
+    image: node:22-alpine
+    working_dir: /app
+    command: sh -c "npm install --no-audit --no-fund --prefer-offline && npm run dev"
+    environment:
+      API_URL: http://host.docker.internal:8000
+    volumes:
+      - ./apps/web:/app
+    ports: ["3000:3000"]
+    depends_on: [db, redis]

@@ -29,3 +29,14 @@
 - **Events:** append-only `lead_events`; types are `created | stage_changed | assigned | next_action_scheduled | note | call_made | task_completed | opted_out`. Payload is jsonb.
 - **List sort:** `next_action_at ASC NULLS LAST, created_at DESC`. Limit default 50, max 200.
 - **No per-staff visibility restriction yet:** any authenticated user in a dealer sees all its leads. Sharpening comes with E5/E8.
+
+## 2026-11-22: E3 web stack decisions
+- **Framework:** Next.js 15 App Router, React 19, TS strict. PWA via manifest + `/sw.js` (empty cache now; offline queue in E3.1).
+- **Styling:** Tailwind + custom tokens (primary `#1F4D2B` = deep green per brief Part I.6). shadcn-compatible stubs ship in `src/components/ui/*` so the app runs before anyone runs `shadcn add`; `components.json` is configured so `shadcn add` overwrites them cleanly.
+- **State:** TanStack Query declared in deps for future use; E3 uses plain `useEffect`/`useState` for simplicity (Quick Add, list, detail are each 1-2 fetches).
+- **Forms:** plain `useState` + inline validation. react-hook-form + zod reserved for larger forms (bulk-import wizard, settings).
+- **Token storage:** access in `localStorage`, refresh in `localStorage` (not httpOnly cookie — deferred; will revisit when we add a Next.js server-side API proxy that holds sessions).
+- **API client:** `src/lib/api.ts` handles JWT + auto-refresh on 401. Base URL `/api/backend` — Next rewrites to `API_URL` so there's no CORS in dev.
+- **Icons:** `lucide-react`.
+- **Shell:** bottom tab bar (mobile) with FAB-style `+` for Quick Add; sidebar (md+).
+- **Deferred to E3.1:** offline queue via service worker + IndexedDB, next-intl Marathi/Hindi catalogs, Playwright e2e tests, Android push.

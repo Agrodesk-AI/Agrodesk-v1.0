@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  background: theme(colors.bg);
+  color: theme(colors.text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 48px tap targets by default on mobile */
+@media (max-width: 640px) {
+  button, a[role="button"] { min-height: 44px; }
+}

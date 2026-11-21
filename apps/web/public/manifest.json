@@ -1,0 +1,13 @@
+{
+  "name": "Agrodesk",
+  "short_name": "Agrodesk",
+  "description": "Follow up every lead. Help every farmer.",
+  "start_url": "/today",
+  "display": "standalone",
+  "background_color": "#FAFAF7",
+  "theme_color": "#1F4D2B",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
