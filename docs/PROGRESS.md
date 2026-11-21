@@ -6,12 +6,14 @@
 - Not verified: `make up` (Docker not available in the Cowork VM; run on your Windows machine with Docker Desktop).
 
 ## Done
+- E1 shipped: auth, tenancy with RLS, cross-tenant test green (11/11 tests pass).
 - docs/SYSTEM_DESIGN.md written — MVP architecture, data flow, trade-offs, scale plan, assumptions.
 
 ## Next
 - Run `make up` locally with Docker Desktop to finish E0 "done when".
 - Put `AGRODESK_PROJECT.md` at repo root (copy from the Claude Project).
-- Start E1 (auth and tenancy): plan first, wait for approval.
+- Start E2 (customers + leads core API): plan first, wait for approval.
+- On your Windows machine: install Python 3.12+, `make up`, `cd apps/api && pip install -e ".[dev]" && alembic upgrade head && pytest`, then `python -m scripts.bootstrap_admin "+91<your-phone>" "Prasad"` to create the first platform admin.
 
 ## Human tasks (start day 1, in parallel)
 - [ ] Apply for WhatsApp BSP account and submit templates
