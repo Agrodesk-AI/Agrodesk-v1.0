@@ -26,7 +26,10 @@ from app.main import app
 async def truncate_db():
     async with engine.begin() as conn:
         await conn.execute(text("SET LOCAL app.is_platform_admin = 'true'"))
-        await conn.execute(text("TRUNCATE users, otp_codes, dealers RESTART IDENTITY CASCADE"))
+        await conn.execute(text(
+            "TRUNCATE tasks, lead_events, leads, consents, customers, "
+            "users, otp_codes, dealers RESTART IDENTITY CASCADE"
+        ))
     yield
 
 

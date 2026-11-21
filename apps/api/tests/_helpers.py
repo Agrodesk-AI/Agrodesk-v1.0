@@ -1,3 +1,4 @@
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import select, text
 
@@ -39,3 +40,11 @@ async def last_otp_for(phone: str) -> OtpCode | None:
             select(OtpCode).where(OtpCode.phone == normalize_phone(phone))
             .order_by(OtpCode.created_at.desc()).limit(1)
         )
+
+
+def future(seconds: int = 3600) -> str:
+    return (datetime.now(UTC) + timedelta(seconds=seconds)).isoformat()
+
+
+def past(seconds: int = 3600) -> str:
+    return (datetime.now(UTC) - timedelta(seconds=seconds)).isoformat()
