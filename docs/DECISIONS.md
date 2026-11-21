@@ -19,3 +19,13 @@
 - **DB role:** application must connect as a **non-superuser** role (superuser bypasses even FORCE RLS). Alembic can run as either — the migration contains no tenant-scoped inserts.
 - **RLS test outcome:** owner A attempting to GET/DELETE dealer B's user by ID returns **404** (not 403) so the ID is not an oracle. Platform admin sees both — proves the bypass works.
 - **Ruff `B008` ignored:** FastAPI's `Depends(...)` default pattern is idiomatic and safe.
+
+## 2026-11-22: E2 customers + leads decisions
+- **Customer dedup:** `POST /customers` returns existing row with 200 on `(dealer_id, phone)` collision (no name/field merge — PATCH does that).
+- **Phone uniqueness:** `customers(dealer_id, phone)` unique — same phone can exist across dealers.
+- **State machine:** allowed transitions codified in `lead_service.ALLOWED_TRANSITIONS`. Won is terminal. Lost is reopenable via `new`. Any open stage requires `next_action_at`. DB CHECKs enforce `lost ⇒ lost_reason` and `won ⇒ won_at`.
+- **Auto-tasks:** creating a lead or updating `next_action_at` upserts one `pending` task for `owner_user_id`. Full Planner (nightly beat) lands in E5.
+- **Won/lost cancels pending tasks** (`status=skipped, completed_at=now`).
+- **Events:** append-only `lead_events`; types are `created | stage_changed | assigned | next_action_scheduled | note | call_made | task_completed | opted_out`. Payload is jsonb.
+- **List sort:** `next_action_at ASC NULLS LAST, created_at DESC`. Limit default 50, max 200.
+- **No per-staff visibility restriction yet:** any authenticated user in a dealer sees all its leads. Sharpening comes with E5/E8.
