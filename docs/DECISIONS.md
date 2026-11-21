@@ -78,3 +78,17 @@
   - `other` → +2d
 - **POST /v1/tasks/{id}/outcome** now accepts an optional `next_action_at` to override the suggestion; applies it to the lead, writes `next_action_scheduled` event, and inserts a fresh pending task.
 - **GET /v1/tasks/{id}/suggest?outcome=…** returns the suggested next action without mutating state — used by the OutcomeSheet to preview.
+
+## 2026-11-22: E6 WhatsApp gateway decisions
+- **BSP adapter is a Protocol** (`WhatsAppProvider`) with 4 methods: `send_session`, `send_template`, `verify_signature`, `parse_webhook`. First implementation is `FakeWhatsAppProvider` (in-process send sink + HMAC-SHA256 signing) selected via `WHATSAPP_PROVIDER=fake`. Gupshup / Interakt / WATI / WhatsApp Cloud API are swap-in classes.
+- **Outbox pattern:** writers call `outbox_service.enqueue()` inside their own DB transaction so the message intent and the business change commit together. Celery task `app.jobs.outbox.process_pending` polls every 60 s and dispatches.
+- **Retries:** `RETRY_DELAYS_SEC = [60, 300, 900, 3600, 14400, 86400]`. On the 6th consecutive failure the row is marked `failed` and a `note` event (`payload.kind='message_dead_letter'`) is written to the related lead, ready for owner UI.
+- **Rejected vs failed:** `rejected` is terminal-without-retry (opt-out, missing customer, provider 4xx, outside session window); `failed` is terminal after exhausting retries. Both get out of the poll loop and stop costing cycles.
+- **24-hour session window:** computed from `conversations.last_customer_message_at`. `kind='wa_session'` outside the window → `rejected(outside_session_window)`. Templates (`kind='wa_template'`) always allowed.
+- **Webhook:** `POST /v1/webhooks/whatsapp`, public, body signed via HMAC-SHA256 against `WHATSAPP_WEBHOOK_SECRET`. Header `X-Hub-Signature-256: sha256=<hex>` (Meta's shape; most BSPs mirror). Missing / wrong signature → 401.
+- **Replay idempotency:** `provider_message_id` has a partial unique index on `messages`. Replays return `duplicates=1` and are a no-op.
+- **Dealer routing:** inbound message resolves dealer by `dealers.whatsapp_number == event.to_phone`; unknown dealer increments `unknown_dealer` and is otherwise ignored.
+- **Unknown-customer flow:** first inbound creates a stub customer `name="WhatsApp <phone>"` with dealer's default language.
+- **Opt-out keywords:** `STOP`, `STOP ALL`, `BAND`, `UNSUBSCRIBE` (Latin exact match, case-insensitive) and `रद्द`, `बंद`, `बंद करो`, `मैसेज बंद` (Devanagari contains). First-pass list — book native-speaker review before pilot.
+- **Outbox idempotency:** every outbox row carries an `idempotency_key` (unique across the table); the sent `messages` row reuses it so the adapter can safely dedupe retries at the BSP.
+- **Status updates:** webhook also accepts `{type:'status', id, status, failure_reason}` payloads and advances `messages.status`. Status ranks prevent an earlier status from overwriting a later one.

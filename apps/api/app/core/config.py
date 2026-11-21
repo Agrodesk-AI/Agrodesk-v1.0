@@ -19,9 +19,14 @@ class Settings(BaseSettings):
     otp_max_attempts: int = 5
     default_phone_region: str = "IN"
     sms_provider: str = "fake"
-    # Planner defaults (IST). Beat schedule in celery_app.py is UTC.
     overdue_threshold_hours: int = 2
     stale_lead_days: int = 14
+
+    # WhatsApp
+    whatsapp_provider: str = "fake"  # fake | gupshup | interakt | wati | wa_cloud
+    whatsapp_webhook_secret: str = "dev-whatsapp-secret"
+    whatsapp_session_window_hours: int = 24
+    outbox_max_attempts: int = 6
 
 
 @lru_cache
