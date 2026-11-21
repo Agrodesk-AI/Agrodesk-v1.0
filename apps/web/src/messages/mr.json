@@ -1,6 +1,13 @@
 {
-  "app": { "name": "अ‍ॅग्रोडेस्क" },
-  "nav": { "today": "आज", "leads": "लीड्स", "add": "नवीन", "profile": "प्रोफाइल" },
+  "app": {
+    "name": "अ‍ॅग्रोडेस्क"
+  },
+  "nav": {
+    "today": "आज",
+    "leads": "लीड्स",
+    "add": "नवीन",
+    "profile": "प्रोफाइल"
+  },
   "common": {
     "loading": "लोड होत आहे…",
     "save": "जतन करा",
@@ -38,7 +45,9 @@
   "leads": {
     "title": "लीड्स",
     "addBtn": "+ लीड जोडा",
-    "filters": { "all": "सर्व" },
+    "filters": {
+      "all": "सर्व"
+    },
     "empty": "अजून लीड्स नाहीत",
     "emptyBody": "लीड जोडून सुरुवात करा.",
     "nextAt": "पुढील: {at}",
@@ -99,7 +108,11 @@
     "oem": "कंपनीकडून",
     "other": "इतर"
   },
-  "score": { "hot": "हॉट", "warm": "वॉर्म", "dead": "बंद" },
+  "score": {
+    "hot": "हॉट",
+    "warm": "वॉर्म",
+    "dead": "बंद"
+  },
   "eventType": {
     "created": "लीड तयार झाली",
     "stage_changed": "टप्पा बदलला",
@@ -119,5 +132,31 @@
   "profile": {
     "title": "प्रोफाइल",
     "language": "भाषा"
+  },
+  "import": {
+    "title": "बल्क इम्पोर्ट",
+    "step1": "१. फाइल अपलोड करा",
+    "step2": "२. कॉलम जोडा",
+    "step3": "३. तपासा",
+    "dropLabel": "CSV किंवा XLSX फाइल निवडा",
+    "detected": "सापडलेले कॉलम",
+    "mapLabel": "कोणत्या फील्डशी जोडायचे",
+    "requiredColumns": "फोन आणि नाव आवश्यक",
+    "defaultSource": "डिफॉल्ट स्रोत",
+    "duplicatePolicy": "डुप्लिकेट नंबर धोरण",
+    "policy": {
+      "skip": "वगळा",
+      "update_customer": "ग्राहक अद्ययावत करा आणि लीड जोडा",
+      "create_lead_only": "अस्तित्वात असलेल्या ग्राहकाला लीड जोडा"
+    },
+    "dryRun": "फक्त पूर्वावलोकन (काहीही सेव्ह होणार नाही)",
+    "preview": "पूर्वावलोकन",
+    "submit": "इम्पोर्ट करा",
+    "submitting": "इम्पोर्ट होत आहे…",
+    "result": "निकाल",
+    "resultLine": "{total} रो · {created} तयार · {updated} अद्ययावत · {skipped} वगळले · {errors} त्रुटी",
+    "downloadErrors": "त्रुटी अहवाल डाउनलोड करा",
+    "back": "मागे",
+    "next": "पुढे"
   }
 }

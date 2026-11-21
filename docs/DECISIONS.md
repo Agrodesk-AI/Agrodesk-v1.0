@@ -48,3 +48,18 @@
 - **i18n:** `next-intl` with **no URL locale routing**. `NextIntlClientProvider` wraps the whole app in a client provider that reads `localStorage['agrodesk.locale']`, falling back to the browser's accepted language, then `en`. The language picker lives on `/profile`.
 - **Catalogs:** machine-authored `src/messages/{en,mr,hi}.json`. Needs a native-speaker review before pilot — tracked in `docs/PROGRESS.md`.
 - **Playwright:** smoke test skipped unless `E2E_OWNER_FIXED_CODE` is set; relies on a live dev-mode backend with a seeded owner. Full e2e with fixtures lands later.
+
+## 2026-11-22: E4 bulk import decisions
+- **Endpoint:** `POST /v1/leads/import` — multipart with `file`, JSON `mapping`, `default_source`, `duplicate_policy`, `dry_run`.
+- **Formats:** `.csv` (stdlib `csv` with UTF-8 BOM handling) and `.xlsx`/`.xlsm` (openpyxl, read-only + data-only).
+- **Limits:** 2 MB file size, 5000 data rows. Beyond that, point users at Celery batch — tracked for a later epic.
+- **Required columns:** `phone` + `name`. Every other canonical field (`model_interest`, `source`, `campaign`, `ad_name`, `next_action_at`) is optional, with fallbacks (`source` → `default_source`; `next_action_at` → tomorrow 10:00 IST).
+- **Duplicate policies:**
+  - `skip` — ignore rows whose `(dealer_id, phone)` already exists
+  - `update_customer` — update the existing customer's `name`, then create a new lead
+  - `create_lead_only` (default) — keep the customer unchanged, add a new lead
+- **Phone normalization + source validation** run per-row; failures produce an `ImportRowError` (row, field, message) and the row is dropped.
+- **Cross-tenant proven:** dealer A importing a phone that exists on dealer B creates a new customer in A — verified by `tests/test_import.py::test_cross_tenant_import`.
+- **Acceptance** (`test_acceptance_100_rows_10_dup_5_invalid`): 100 rows, 10 duplicates, 5 invalid phones, `skip` policy → 85 created, 10 skipped, 5 errors (matches brief E.4 exactly).
+- **Lead provenance:** rows imported from a file get `created_via='csv'` and a `created` event with `payload.via='csv_import'` and `payload.row=<file row number>`.
+- **Frontend:** 3-step wizard with auto-detected column mapping (phone/name/model/source/campaign/ad_name/next_action_at); `dry_run` on by default so users preview before writing; error CSV downloads client-side.

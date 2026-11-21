@@ -1,6 +1,13 @@
 {
-  "app": { "name": "एग्रोडेस्क" },
-  "nav": { "today": "आज", "leads": "लीड्स", "add": "नया", "profile": "प्रोफ़ाइल" },
+  "app": {
+    "name": "एग्रोडेस्क"
+  },
+  "nav": {
+    "today": "आज",
+    "leads": "लीड्स",
+    "add": "नया",
+    "profile": "प्रोफ़ाइल"
+  },
   "common": {
     "loading": "लोड हो रहा है…",
     "save": "सहेजें",
@@ -38,7 +45,9 @@
   "leads": {
     "title": "लीड्स",
     "addBtn": "+ लीड जोड़ें",
-    "filters": { "all": "सभी" },
+    "filters": {
+      "all": "सभी"
+    },
     "empty": "अभी कोई लीड नहीं",
     "emptyBody": "लीड जोड़कर शुरू करें.",
     "nextAt": "अगला: {at}",
@@ -99,7 +108,11 @@
     "oem": "कंपनी से",
     "other": "अन्य"
   },
-  "score": { "hot": "हॉट", "warm": "वार्म", "dead": "बंद" },
+  "score": {
+    "hot": "हॉट",
+    "warm": "वार्म",
+    "dead": "बंद"
+  },
   "eventType": {
     "created": "लीड बनी",
     "stage_changed": "स्टेज बदला",
@@ -119,5 +132,31 @@
   "profile": {
     "title": "प्रोफ़ाइल",
     "language": "भाषा"
+  },
+  "import": {
+    "title": "बल्क इम्पोर्ट",
+    "step1": "1. फ़ाइल अपलोड करें",
+    "step2": "2. कॉलम जोड़ें",
+    "step3": "3. जाँचें",
+    "dropLabel": "CSV या XLSX फ़ाइल चुनें",
+    "detected": "मिले कॉलम",
+    "mapLabel": "किस फ़ील्ड से जोड़ें",
+    "requiredColumns": "फ़ोन और नाम ज़रूरी हैं",
+    "defaultSource": "डिफ़ॉल्ट स्रोत",
+    "duplicatePolicy": "डुप्लिकेट नंबर नीति",
+    "policy": {
+      "skip": "छोड़ें",
+      "update_customer": "ग्राहक अपडेट करें और लीड जोड़ें",
+      "create_lead_only": "मौजूदा ग्राहक पर लीड जोड़ें"
+    },
+    "dryRun": "सिर्फ़ पूर्वावलोकन (कुछ सहेजा नहीं जाएगा)",
+    "preview": "पूर्वावलोकन",
+    "submit": "इम्पोर्ट करें",
+    "submitting": "इम्पोर्ट हो रहा है…",
+    "result": "नतीजा",
+    "resultLine": "{total} पंक्तियाँ · {created} बनीं · {updated} अपडेट · {skipped} छूटीं · {errors} त्रुटियाँ",
+    "downloadErrors": "त्रुटि रिपोर्ट डाउनलोड करें",
+    "back": "पीछे",
+    "next": "आगे"
   }
 }

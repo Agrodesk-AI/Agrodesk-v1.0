@@ -36,9 +36,10 @@ export default function LeadsPage() {
     <>
       <div className="mb-3 flex items-center justify-between">
         <h1 className="text-xl font-semibold">{t("title")}</h1>
-        <Link href="/leads/new">
-          <Button size="sm">{t("addBtn")}</Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/leads/import"><Button size="sm" variant="outline">Import</Button></Link>
+          <Link href="/leads/new"><Button size="sm">{t("addBtn")}</Button></Link>
+        </div>
       </div>
       <div className="mb-3 flex gap-2 overflow-x-auto pb-2" data-testid="stage-filters">
         <button

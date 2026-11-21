@@ -1,6 +1,13 @@
 {
-  "app": { "name": "Agrodesk" },
-  "nav": { "today": "Today", "leads": "Leads", "add": "Add", "profile": "Profile" },
+  "app": {
+    "name": "Agrodesk"
+  },
+  "nav": {
+    "today": "Today",
+    "leads": "Leads",
+    "add": "Add",
+    "profile": "Profile"
+  },
   "common": {
     "loading": "Loading…",
     "save": "Save",
@@ -38,7 +45,9 @@
   "leads": {
     "title": "Leads",
     "addBtn": "+ Add lead",
-    "filters": { "all": "All" },
+    "filters": {
+      "all": "All"
+    },
     "empty": "No leads yet",
     "emptyBody": "Start by adding a lead.",
     "nextAt": "Next: {at}",
@@ -99,7 +108,11 @@
     "oem": "OEM",
     "other": "Other"
   },
-  "score": { "hot": "Hot", "warm": "Warm", "dead": "Dead" },
+  "score": {
+    "hot": "Hot",
+    "warm": "Warm",
+    "dead": "Dead"
+  },
   "eventType": {
     "created": "Lead created",
     "stage_changed": "Stage changed",
@@ -119,5 +132,31 @@
   "profile": {
     "title": "Profile",
     "language": "Language"
+  },
+  "import": {
+    "title": "Bulk import",
+    "step1": "1. Upload file",
+    "step2": "2. Map columns",
+    "step3": "3. Review",
+    "dropLabel": "Choose a CSV or XLSX file",
+    "detected": "Detected columns",
+    "mapLabel": "Map to canonical field",
+    "requiredColumns": "Phone and Name are required",
+    "defaultSource": "Default source",
+    "duplicatePolicy": "Duplicate phone policy",
+    "policy": {
+      "skip": "Skip",
+      "update_customer": "Update customer and add lead",
+      "create_lead_only": "Add lead on existing customer"
+    },
+    "dryRun": "Dry run (preview counts without writing)",
+    "preview": "Preview",
+    "submit": "Import",
+    "submitting": "Importing…",
+    "result": "Result",
+    "resultLine": "{total} rows · {created} created · {updated} updated · {skipped} skipped · {errors} errors",
+    "downloadErrors": "Download error report",
+    "back": "Back",
+    "next": "Next"
   }
 }
