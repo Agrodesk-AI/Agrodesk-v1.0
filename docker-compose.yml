@@ -27,3 +27,25 @@ services:
 
 volumes:
   pgdata:
+  worker:
+    image: python:3.12-slim
+    working_dir: /app
+    command: sh -c "pip install -e .[dev] && celery -A app.jobs worker -l info -Q agrodesk"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://agrodesk:agrodesk@db:5432/agrodesk
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: change-me
+    volumes:
+      - ./apps/api:/app
+    depends_on: [db, redis]
+  beat:
+    image: python:3.12-slim
+    working_dir: /app
+    command: sh -c "pip install -e .[dev] && celery -A app.jobs beat -l info"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://agrodesk:agrodesk@db:5432/agrodesk
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: change-me
+    volumes:
+      - ./apps/api:/app
+    depends_on: [db, redis]

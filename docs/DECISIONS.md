@@ -63,3 +63,18 @@
 - **Acceptance** (`test_acceptance_100_rows_10_dup_5_invalid`): 100 rows, 10 duplicates, 5 invalid phones, `skip` policy → 85 created, 10 skipped, 5 errors (matches brief E.4 exactly).
 - **Lead provenance:** rows imported from a file get `created_via='csv'` and a `created` event with `payload.via='csv_import'` and `payload.row=<file row number>`.
 - **Frontend:** 3-step wizard with auto-detected column mapping (phone/name/model/source/campaign/ad_name/next_action_at); `dry_run` on by default so users preview before writing; error CSV downloads client-side.
+
+## 2026-11-22: E5 Planner decisions
+- **Celery config:** app `agrodesk`, broker + backend on `REDIS_URL`, queue `agrodesk`, `task_acks_late=True`, `worker_prefetch_multiplier=1` so a long task doesn't hog a worker.
+- **Beat schedule (UTC):** 19:00 → `generate_tasks_for_due` (00:30 IST); 20:30 → `check_stale_leads` (02:00 IST); `02:35-15:35` hourly → `emit_overdue_alerts` (~08:05-21:05 IST).
+- **Idempotency:** `job_runs(job_name, logical_date, COALESCE(scope_id, '00…000'::uuid))` unique index. `_acquire_run` returns False if someone else claimed the key.
+- **Async in Celery:** tasks are thin sync wrappers calling `asyncio.run(planner_service.*)`. Keeps the sync-vs-async boundary at exactly one place; tests call the service functions directly.
+- **Overdue threshold:** `next_action_at + 2h < now` (configurable via `OVERDUE_THRESHOLD_HOURS`). One alert per lead per day via `job_runs` scoped by `lead_id`.
+- **Stale threshold:** 14 days since the last `lead_event`, configurable via `STALE_LEAD_DAYS`. Writes a `note` event with `payload.kind='stale_flagged'`.
+- **Outcome rules (code, not AI):**
+  - `not_picked` → +1d; `interested` → +2d; `price_issue` → +3d
+  - `visit_planned` → day before current `next_action_at` if ≥ 2 days out, else +3d
+  - `bought_elsewhere` / `not_interested` → None (don't reschedule; the user is expected to transition to `lost` next)
+  - `other` → +2d
+- **POST /v1/tasks/{id}/outcome** now accepts an optional `next_action_at` to override the suggestion; applies it to the lead, writes `next_action_scheduled` event, and inserts a fresh pending task.
+- **GET /v1/tasks/{id}/suggest?outcome=…** returns the suggested next action without mutating state — used by the OutcomeSheet to preview.

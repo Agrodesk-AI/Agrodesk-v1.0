@@ -17,5 +17,11 @@ class TaskOut(BaseModel):
 
 
 class TaskOutcomeIn(BaseModel):
-    outcome: str  # e.g. not_picked | interested | visit_planned | price_issue | not_interested
+    outcome: str
     notes: str | None = None
+    next_action_at: datetime | None = None  # optional reschedule (overrides the suggestion)
+
+
+class SuggestOut(BaseModel):
+    outcome: str
+    next_action_at: datetime | None

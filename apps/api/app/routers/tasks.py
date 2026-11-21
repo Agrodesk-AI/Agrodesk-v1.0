@@ -1,11 +1,13 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.deps.auth import get_current_user
 from app.deps.db import get_session_tenant
-from app.schemas.task import TaskOut, TaskOutcomeIn
+from app.models import Lead
+from app.schemas.task import SuggestOut, TaskOut, TaskOutcomeIn
 from app.services import task_service
 
 router = APIRouter(prefix="/v1/tasks", tags=["tasks"])
@@ -13,14 +15,8 @@ router = APIRouter(prefix="/v1/tasks", tags=["tasks"])
 
 def _out(t) -> TaskOut:
     return TaskOut(
-        id=t.id,
-        dealer_id=t.dealer_id,
-        lead_id=t.lead_id,
-        user_id=t.user_id,
-        due_at=t.due_at,
-        type=t.type,
-        status=t.status,
-        outcome=t.outcome,
+        id=t.id, dealer_id=t.dealer_id, lead_id=t.lead_id, user_id=t.user_id,
+        due_at=t.due_at, type=t.type, status=t.status, outcome=t.outcome,
         completed_at=t.completed_at,
     )
 
@@ -46,10 +42,34 @@ async def outcome(
         raise HTTPException(status.HTTP_404_NOT_FOUND, "not_found")
     try:
         task = await task_service.mark_outcome(
-            session, task=task, acting_user_id=UUID(principal["user_id"]), outcome=body.outcome
+            session,
+            task=task,
+            acting_user_id=UUID(principal["user_id"]),
+            outcome=body.outcome,
+            next_action_at=body.next_action_at,
         )
     except task_service.BadOutcome as e:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, f"bad_outcome:{e}") from None
     except task_service.TaskNotForYou:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "task_not_yours") from None
     return _out(task)
+
+
+@router.get("/{task_id}/suggest", response_model=SuggestOut)
+async def suggest(
+    task_id: UUID,
+    outcome: str = Query(...),
+    principal: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session_tenant),
+) -> SuggestOut:
+    task = await task_service.get(session, task_id)
+    if task is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "not_found")
+    lead = None
+    if task.lead_id is not None:
+        lead = await session.scalar(select(Lead).where(Lead.id == task.lead_id))
+    if lead is None:
+        return SuggestOut(outcome=outcome, next_action_at=None)
+    if outcome not in task_service.ALLOWED_OUTCOMES:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, f"bad_outcome:{outcome}") from None
+    return SuggestOut(outcome=outcome, next_action_at=task_service.suggest_next_action(outcome, lead=lead))
