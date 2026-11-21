@@ -5,6 +5,9 @@
 - Verified (Python 3.13, cloud workspace): ruff lint + format clean, pytest 1 passed.
 - Not verified: `make up` (Docker not available in the Cowork VM; run on your Windows machine with Docker Desktop).
 
+## Done
+- docs/SYSTEM_DESIGN.md written — MVP architecture, data flow, trade-offs, scale plan, assumptions.
+
 ## Next
 - Run `make up` locally with Docker Desktop to finish E0 "done when".
 - Put `AGRODESK_PROJECT.md` at repo root (copy from the Claude Project).
