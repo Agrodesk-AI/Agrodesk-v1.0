@@ -158,5 +158,49 @@
     "downloadErrors": "Download error report",
     "back": "Back",
     "next": "Next"
+  },
+  "profiles": {
+    "title": "Profiles on this phone",
+    "farmer": "Farmer",
+    "dealer": "Dealer · {role}",
+    "active": "Active",
+    "addFarmer": "Add farmer profile"
+  },
+  "location": {
+    "state": "State",
+    "district": "District",
+    "tehsil": "Tehsil / Taluka",
+    "villageSearch": "Search your village",
+    "villageOptional": "Village is optional — you can add it later.",
+    "change": "Change"
+  },
+  "onboarding": {
+    "title": "Welcome to Agrodesk",
+    "subtitle": "Tell us a little about you.",
+    "language": "Your language",
+    "name": "Your name",
+    "location": "Where is your farm?",
+    "dob": "Date of birth",
+    "dobHint": "You must be 18 or older.",
+    "submit": "Continue",
+    "saving": "Saving…",
+    "errors": {
+      "age_gate": "You must be 18 or older to use Agrodesk.",
+      "village_not_in_tehsil": "That village is not in the selected tehsil.",
+      "unknown_tehsil": "Please pick your tehsil again.",
+      "already_onboarded": "This phone already has a farmer profile.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "farmNav": {
+    "home": "Home",
+    "profile": "Profile"
+  },
+  "farm": {
+    "greeting": "Hello, {name}",
+    "nearbyTehsils": "Nearby tehsils",
+    "sameDistrict": "Other tehsils in your district",
+    "comingTitle": "More coming soon",
+    "comingBody": "Rentals, subsidies, prices and your local community will appear here."
   }
 }

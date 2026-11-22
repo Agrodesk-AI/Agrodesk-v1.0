@@ -27,5 +27,7 @@ async def get_session_tenant(request: Request) -> AsyncIterator[AsyncSession]:
                 s,
                 dealer_id=str(principal["dealer_id"]) if principal["dealer_id"] else None,
                 is_platform_admin=principal["role"] == "platform_admin",
+                farmer_id=principal.get("farmer_id"),
+                account_id=principal.get("account_id"),
             )
             yield s

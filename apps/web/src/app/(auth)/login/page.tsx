@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { api } from "@/lib/api";
-import { authStore } from "@/lib/auth";
+import { authStore, homeFor } from "@/lib/auth";
 import type { TokenPair } from "@/lib/types";
 
 type Step = "phone" | "code";
@@ -43,7 +43,7 @@ export default function LoginPage() {
         body: JSON.stringify({ phone, code }),
       });
       authStore.set(tokens);
-      router.replace("/today");
+      router.replace(homeFor(tokens.active_kind));
     } catch (e) {
       setError(e instanceof Error ? e.message : t("errors.badCode"));
     } finally {

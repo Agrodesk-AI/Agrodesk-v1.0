@@ -22,10 +22,44 @@ export type Outcome =
   | "not_interested"
   | "other";
 
+export interface Profile {
+  id: string;
+  kind: "staff" | "farmer";
+  role: string;
+  dealer_id: string | null;
+  display_name: string;
+}
+
 export interface TokenPair {
   access_token: string;
   refresh_token: string;
   token_type: string;
+  active_kind: "staff" | "farmer" | "account";
+  active_profile_id: string | null;
+  profiles: Profile[];
+}
+
+/** A location row. id is the official LGD code. */
+export interface Place {
+  id: number;
+  name: string;
+  name_en: string;
+}
+
+export interface NearbyTehsil extends Place {
+  rank: number; // 0 self, 1.. curated neighbour, 99 same-district fallback
+}
+
+export interface FarmerMe {
+  id: string;
+  display_name: string;
+  language: string;
+  phone: string;
+  status: string;
+  state: Place;
+  district: Place;
+  tehsil: Place;
+  village: Place | null;
 }
 
 export interface Me {

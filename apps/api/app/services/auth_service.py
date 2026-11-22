@@ -4,7 +4,9 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
-from app.models import OtpCode, User
+from app.models import Account, Farmer, OtpCode, User
+from app.schemas.auth import Profile
+from app.security.jwt import KIND_FARMER, KIND_STAFF
 from app.security.otp import generate_code, hash_code, verify_code
 from app.security.phone import normalize_phone
 
@@ -44,7 +46,71 @@ async def request_otp(session: AsyncSession, raw_phone: str, send_sms) -> None:
     await send_sms(phone=phone, body=f"Agrodesk code: {code}. Valid {settings.otp_ttl_minutes}m.")
 
 
-async def verify_otp(session: AsyncSession, raw_phone: str, code: str) -> User:
+async def get_or_create_account(session: AsyncSession, phone: str) -> Account:
+    acct = await session.scalar(select(Account).where(Account.phone == phone))
+    if acct is None:
+        acct = Account(phone=phone)
+        session.add(acct)
+        await session.flush()
+    return acct
+
+
+async def list_profiles(session: AsyncSession, account: Account) -> list[Profile]:
+    """All active profiles for an account. Needs platform-admin context."""
+    profiles: list[Profile] = []
+    user = await session.scalar(
+        select(User).where(User.phone == account.phone, User.active.is_(True))
+    )
+    if user is not None:
+        if user.account_id is None:
+            user.account_id = account.id  # lazy link for users created outside accounts
+        profiles.append(
+            Profile(
+                id=str(user.id),
+                kind=KIND_STAFF,
+                role=user.role,
+                dealer_id=str(user.dealer_id) if user.dealer_id else None,
+                display_name=user.name,
+            )
+        )
+    farmer = await session.scalar(
+        select(Farmer).where(Farmer.account_id == account.id, Farmer.status == "active")
+    )
+    if farmer is not None:
+        profiles.append(
+            Profile(
+                id=str(farmer.id),
+                kind=KIND_FARMER,
+                role="farmer",
+                dealer_id=None,
+                display_name=farmer.display_name,
+            )
+        )
+    return profiles
+
+
+def pick_profile(profiles: list[Profile], wanted_id: str | None) -> Profile | None:
+    if wanted_id:
+        return next((p for p in profiles if p.id == wanted_id), None)
+    # Staff first keeps v1 dealer logins unchanged; farmer otherwise.
+    for kind in (KIND_STAFF, KIND_FARMER):
+        for p in profiles:
+            if p.kind == kind:
+                return p
+    return None
+
+
+async def mark_login(session: AsyncSession, profile: Profile) -> None:
+    model = User if profile.kind == KIND_STAFF else Farmer
+    obj = await session.get(model, profile.id)
+    if obj is not None:
+        obj.last_login_at = datetime.now(UTC)
+        await session.flush()
+
+
+async def verify_otp(session: AsyncSession, raw_phone: str, code: str) -> Account:
+    """Check the code and return the phone's account, creating it on first login.
+    An account with no profile can only onboard (see farmer router)."""
     phone = normalize_phone(raw_phone, settings.default_phone_region)
     now = datetime.now(UTC)
 
@@ -64,12 +130,10 @@ async def verify_otp(session: AsyncSession, raw_phone: str, code: str) -> User:
 
     row.used = True
 
-    # NOTE: this lookup must run with platform-admin context so RLS on users
-    # doesn't hide the row before we know who's logging in.
-    user = await session.scalar(select(User).where(User.phone == phone, User.active.is_(True)))
-    if user is None:
-        raise OtpInvalid("no_such_user")
-
-    user.last_login_at = now
+    # NOTE: runs with platform-admin context so RLS doesn't hide rows before we
+    # know who's logging in.
+    account = await get_or_create_account(session, phone)
+    if account.locked:
+        raise OtpInvalid("locked")
     await session.flush()
-    return user
+    return account

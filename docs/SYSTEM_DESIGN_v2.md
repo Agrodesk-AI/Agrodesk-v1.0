@@ -2,7 +2,7 @@
 
 **Supersedes** `docs/SYSTEM_DESIGN.md` on the new scope (dealer/farmer split, community, rental exchange, subsidies, trust). Everything from v1 that is not re-decided here still stands.
 **Source of truth for features:** `docs/AGRODESK_FINAL_APP_FEATURES.md`.
-**Date:** 2026-11-22. Author: Prasad + Claude Opus 4.7.
+**Date:** 2026-11-22 (§3.1–3.2 updated same day after F0 build). Author: Prasad + Claude Opus 4.7.
 
 ---
 
@@ -154,15 +154,17 @@ profiles(id, account_id, kind, display_name, language, status)
 ### 3.2 Location model — hierarchy + neighbours
 
 ```
-states(id, code, name_en, name_mr, name_hi)
-districts(id, state_id, code, name_en, name_mr, name_hi)
-tehsils(id, district_id, code, name_en, name_mr, name_hi)
-villages(id, tehsil_id, code, name_en, name_mr, name_hi, slug_search)
-tehsil_neighbours(tehsil_id, neighbour_tehsil_id, order)  -- symmetric, from LGD/admin source
+states(id = LGD code, name_en, names jsonb, default_language)
+districts(id = LGD code, state_id, name_en, names jsonb)
+tehsils(id = LGD code, district_id, name_en, names jsonb)
+villages(id = LGD code, tehsil_id, name_en, names jsonb)   -- trigram index on name_en
+tehsil_neighbours(tehsil_id, neighbour_tehsil_id, rank, source)  -- stored both directions
 dealer_service_areas(dealer_id, tehsil_id, is_home)
 ```
 
-- Seeded from an **official source** (Local Government Directory). Imported as a one-off alembic data migration + a periodic re-sync job (schemes and village names change).
+- **All of India, not one state.** PKs are the official LGD codes. `names` is keyed by language code (`{"mr": ..., "ta": ...}`) so every Indian language fits without schema changes; untagged local names live under `"local"` and are shown only to readers of a language in the same script (never Devanagari to a Tamil reader); otherwise English.
+- Loaded from **LGD CSV exports** by `scripts/import_lgd.py` (idempotent upserts, header-tolerant, script-aware language tagging). Re-run to re-sync. No hand-seeded geography in migrations.
+- **Neighbours** are not in LGD: ops curate them per state (CSV import or `PUT /v1/admin/locations/tehsils/{id}/neighbours`). Until a tehsil has curated rows, "nearby" falls back to the other tehsils of its district (rank 99), so every tehsil works on day one.
 - **"Nearby" is not raw distance.** It's the `tehsil_neighbours` map plus an `order` for routing priority. This is the single joint that lead routing, rental matching, and community feed ranking all sit on — one fix, three systems.
 - Farmer position is **village-level only**. Exact coordinates are never stored unless the farmer explicitly shares one for a specific purpose (e.g. "add my farm pin to my offer listing"), and even then it's in a separate `location_shares` table with a purpose + retention.
 

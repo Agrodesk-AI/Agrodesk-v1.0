@@ -115,6 +115,16 @@
 - **Search ranking:** `0.7·(1 - cosine_distance) + 0.3·keyword_boost`. Keyword boost = 1.0 when the query substring is in the chunk text (case-insensitive).
 - **RLS proof point:** `tests/test_kb.py::test_cross_tenant_rls_isolation` probes `SELECT * FROM kb_chunks` as dealer B and asserts dealer A's private rows never appear, in addition to the usual API-level checks.
 
+## 2026-11-22: F0 farmer foundation (all-India)
+- **Scope is all of India**, not the pilot tehsil. Location PKs = LGD codes; names in `names` JSONB keyed by language; loaded from LGD CSVs via `scripts/import_lgd.py`. No geography hard-coded in migrations.
+- **Language fallback for place names:** exact language, else untagged local name if same script, else English. Importer auto-tags unambiguous scripts (Tamil→ta, Telugu→te, …); `--local-lang` only applies to names in that language's script, so a multi-state file can't mislabel.
+- **UI chrome fallback is English, not Hindi**, for languages without a UI catalog yet (en/mr/hi exist). Farmer content languages: en hi mr gu pa bn as or ta te kn ml ur.
+- **Accounts → profiles.** `accounts(phone)` is the identity; `users` (dealer staff/admin) and `farmers` are profiles. Tokens carry `kind` = staff | farmer | account. `get_current_user` is now staff-only, so every existing dealer route rejects farmer/onboarding tokens with 403 `staff_only`.
+- **Unknown phones now get an account-only token** (was 401) that can only browse locations and call `POST /v1/farmer/onboard`. Login defaults to the staff profile when both exist; `POST /v1/auth/switch-profile` changes it.
+- **Age gate:** self-declared DOB stored on the account, 18+ enforced at onboarding. Stronger verification still pending legal (design §3.1).
+- **Farmer RLS:** new GUCs `app.current_farmer`, `app.current_account`; `farmers` and `accounts` rows visible only to self or platform admin.
+- **Onboarding runs in platform context** (same as OTP verify) with explicit ownership checks, since the farmer row id doesn't exist yet when RLS would need it.
+
 ## 2026-11-22: System Design v2 — two-sided app
 - See `docs/SYSTEM_DESIGN_v2.md`. Supersedes `docs/SYSTEM_DESIGN.md` on the new scope: dealer/farmer split, location hierarchy with tehsil neighbours, consented lead routing with SLA re-route, typed community feed, rental exchange state machine, subsidy rules engine, deterministic trust signals, two-layer moderation, expert Q&A queue, STT/TTS adapter pattern.
 - 12 numbered trade-offs in §5. 7 assumptions in §7 that must be validated during the pilot.

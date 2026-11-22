@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { CheckSquare, List, Plus, User, type LucideIcon } from "lucide-react";
-import { authStore, decodePrincipal, type Principal } from "@/lib/auth";
+import { authStore, decodePrincipal, homeFor, type Principal } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
 type NavItem = { href: string; key: "today" | "leads" | "add" | "profile"; Icon: LucideIcon; primary?: boolean };
@@ -28,6 +28,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     if (!p || p.exp * 1000 < Date.now()) {
       authStore.clear();
       router.replace("/login");
+      return;
+    }
+    if (p.kind !== "staff") {
+      // dealer area is staff-only; farmers / new accounts have their own home
+      router.replace(homeFor(p.kind));
       return;
     }
     setPrincipal(p);

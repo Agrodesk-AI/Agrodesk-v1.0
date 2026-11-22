@@ -6,6 +6,7 @@
 - Not verified: `make up` (Docker not available in the Cowork VM; run on your Windows machine with Docker Desktop).
 
 ## Done
+- F0 farmer foundation (all-India): migration 0006 (states/districts/tehsils/villages keyed by LGD code, tehsil_neighbours, dealer_service_areas, accounts, farmers + RLS), LGD CSV importer `scripts/import_lgd.py`, account→profiles auth (staff | farmer | account tokens, switch-profile, profiles list), `/v1/farmer/onboard|me`, `/v1/locations/*` incl. nearby with same-district fallback, admin neighbour edit. PWA: `/onboarding` (13 languages, state→district→tehsil→village picker), `/farm` home + profile, profile switcher on both sides. 75 backend tests pass (run as a non-superuser role); web typecheck + build clean; flow checked in browser (Tamil farmer onboarding).
 - E7 shipped: Knowledge base + catalogue — chunk + embed + hybrid search (Python cosine over JSONB vectors), shared/dealer scoping via RLS, expired-offer filter. 70/70 backend tests green.
 - E6 shipped: WhatsApp gateway — conversations, messages, outbox with RLS; BSP adapter interface + Fake impl; signed webhook with replay guard; outbox worker with 1m→5m→15m→1h→4h→24h retry schedule and dead-letter. 59/59 backend tests green.
 - E5 shipped: Planner with Celery beat (generate_tasks_for_due nightly, check_stale_leads daily, emit_overdue_alerts hourly), suggested-next-date rules, outcome reschedules lead + task. 46/46 backend tests green.
@@ -17,6 +18,13 @@
 - docs/SYSTEM_DESIGN.md written — MVP architecture, data flow, trade-offs, scale plan, assumptions.
 
 ## Next
+- **Security: run the API as a non-superuser Postgres role.** Superusers bypass RLS even with FORCE. With the default `agrodesk` superuser, 4 cross-tenant tests fail (dealer A can read dealer B's leads/users). Create a `NOSUPERUSER NOBYPASSRLS` app role, grant table privileges, point `DATABASE_URL` at it; keep the owner role only for migrations. Tests should run as that role too: `TEST_DATABASE_URL=postgresql+asyncpg://agrodesk_app:...@localhost:5433/agrodesk_test`.
+- Pre-existing: 4 `tests/test_kb.py` tests fail with `TypeError: float * decimal.Decimal` in KB search on this machine. Unrelated to F0; needs a look.
+- Load real LGD data: download state/district/sub-district CSVs (all India) and village CSVs per state from lgdirectory.gov.in, run `scripts/import_lgd.py` top-down. Verify the header aliases against the current export format on the first run.
+- Curate `tehsil_neighbours` for the pilot district first (CSV `tehsil_code,neighbour_code,rank`); every other tehsil uses the same-district fallback until curated.
+- UI catalogs exist only for en/mr/hi; other farmer languages get English chrome with native place names. Add catalogs (gu, pa, bn, ta, te, kn, ml, or, as, ur) with native-speaker review.
+- New mr/hi strings (onboarding, farm, profiles, location) are machine-authored — include in the native-speaker pass.
+- Dealer service areas: table exists; no API yet. Add owner endpoint before lead routing (§3.3).
 - Run `make up` locally with Docker Desktop to finish E0 "done when".
 - Put `AGRODESK_PROJECT.md` at repo root (copy from the Claude Project).
 - Marathi / Hindi translations are machine-authored; book a native-speaker pass on src/messages/{mr,hi}.json before pilot.

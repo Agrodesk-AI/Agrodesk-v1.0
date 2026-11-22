@@ -66,10 +66,17 @@ async def test_rate_limit(client):
 
 
 @pytest.mark.asyncio
-async def test_unknown_phone_rejected(client):
-    # No user exists for this phone; request returns 200 (no enumeration), verify fails.
+async def test_unknown_phone_gets_onboarding_token(client):
+    # A new phone verifies into an account with no profile. The token can only
+    # onboard: dealer routes reject it.
     r = await client.post("/v1/auth/otp/request", json={"phone": "9999999999"})
     assert r.status_code == 200
     await _peek_code_hash_and_set("+919999999999", "111111")
     r = await client.post("/v1/auth/otp/verify", json={"phone": "9999999999", "code": "111111"})
-    assert r.status_code == 401
+    assert r.status_code == 200
+    data = r.json()
+    assert data["active_kind"] == "account"
+    assert data["profiles"] == []
+    h = {"Authorization": f"Bearer {data['access_token']}"}
+    assert (await client.get("/v1/me", headers=h)).status_code == 403
+    assert (await client.get("/v1/leads", headers=h)).status_code == 403

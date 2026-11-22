@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { apiJson } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ProfileSwitcher } from "@/components/profile-switcher";
 import { authStore } from "@/lib/auth";
 import { fmtPhone } from "@/lib/dates";
 import { LOCALES, LOCALE_LABELS, useLocaleCtx, type Locale } from "@/lib/i18n/provider";
@@ -49,6 +50,7 @@ export default function ProfilePage() {
               ))}
             </div>
           </div>
+          <ProfileSwitcher />
           <Button variant="outline" onClick={logout} className="mt-3 w-full">{common("signOut")}</Button>
         </Card>
       ) : (

@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 
 from app.routers import (
-    auth, catalogue, customers, dealers, imports, kb, leads, me, tasks, users, webhooks,
+    auth, catalogue, customers, dealers, farmer, imports, kb, leads, locations, me, tasks, users,
+    webhooks,
 )
 
 app = FastAPI(title="Agrodesk API", version="0.1.0")
@@ -17,6 +18,9 @@ app.include_router(imports.router)
 app.include_router(webhooks.router)
 app.include_router(kb.router)
 app.include_router(catalogue.router)
+app.include_router(farmer.router)
+app.include_router(locations.router)
+app.include_router(locations.admin_router)
 
 
 @app.get("/health")

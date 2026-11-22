@@ -29,7 +29,8 @@ async def truncate_db():
         await conn.execute(text(
             "TRUNCATE kb_chunks, kb_documents, dealer_models, tractor_catalogue, "
             "outbox, messages, conversations, job_runs, tasks, lead_events, "
-            "leads, consents, customers, users, otp_codes, dealers "
+            "leads, consents, customers, farmers, dealer_service_areas, users, accounts, "
+            "otp_codes, tehsil_neighbours, villages, tehsils, districts, states, dealers "
             "RESTART IDENTITY CASCADE"
         ))
     yield
