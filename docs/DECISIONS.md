@@ -115,6 +115,18 @@
 - **Search ranking:** `0.7·(1 - cosine_distance) + 0.3·keyword_boost`. Keyword boost = 1.0 when the query substring is in the chunk text (case-insensitive).
 - **RLS proof point:** `tests/test_kb.py::test_cross_tenant_rls_isolation` probes `SELECT * FROM kb_chunks` as dealer B and asserts dealer A's private rows never appear, in addition to the usual API-level checks.
 
+## 2026-11-22: F2 rental exchange (design §3.5)
+- **Pull matching, not push.** Owners see open nearby needs for kinds they list (`/v1/rentals/needs/nearby`); renters browse nearby listings or a need's matches. The Celery + WhatsApp-template push in the design waits for the BSP; the per-owner daily cap applies then.
+- **"Nearby" = the F0 tehsil map** (own, curated neighbours, same-district fallback), not a per-listing `service_area` JSON. A booking outside that set is refused (`too_far`).
+- **No double booking, enforced in Postgres:** `EXCLUDE USING gist (listing_id =, daterange &&) WHERE state IN ('agreed','in_progress')` (btree_gist). The service checks first for a clean 409; the constraint is the backstop. Agreeing auto-declines overlapping pending requests.
+- **Availability without leaking bookings:** `rental_listing_busy()` is SECURITY DEFINER and returns only a boolean, since bookings are party-only under RLS.
+- **Masked contact in-app** (not a WA relay yet): the phone is revealed only after both parties tap "share", and only from agreed onwards.
+- **Ratings trust gate twice:** service check + `BEFORE INSERT/UPDATE` trigger (`rental_ratings_gate`): completed_by_both|rated only, party → other party only, once per side. Both rated → `rated`.
+- **Disputes:** either side, from in_progress or within 7 days of completion, with a reason; resolved only by platform admin.
+- **RLS:** listings and open needs are readable by any farmer (the marketplace), writable by the owner only. Bookings/events are party-only. Ratings are readable by any farmer (public trust signal). Two-party writes run in platform context with explicit party checks.
+- **Money in paise**, no payments in-app. Rentals legal disclaimers still open (design §1.3).
+- **Not yet:** host verification for high-trust rentals (design §1.1), WhatsApp notifications, voice needs.
+
 ## 2026-11-22: F1 consented lead routing (design §3.3)
 - **Re-route via sweep, not per-lead ETA tasks.** Celery beat runs `process_due_routes` every 5 min with `SELECT … FOR UPDATE SKIP LOCKED`. Survives worker restarts, idempotent, worst-case 5 min late.
 - **SLA = 4 business hours** in the dealer's `business_hours` (`{"mon": ["09:00","19:00"], …, "sun": null}`, IST; default Mon–Sat 9–19). An all-closed or broken schedule falls back to the default so SLAs can't stall forever.

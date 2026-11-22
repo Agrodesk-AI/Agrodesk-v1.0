@@ -199,7 +199,8 @@
   },
   "farmNav": {
     "home": "होम",
-    "profile": "प्रोफ़ाइल"
+    "profile": "प्रोफ़ाइल",
+    "rent": "किराया"
   },
   "farm": {
     "greeting": "नमस्ते, {name}",
@@ -245,6 +246,104 @@
       "too_many_requests": "आज बहुत अनुरोध हो गए। कल कोशिश करें।",
       "stale_consent_text": "अनुमति का पाठ बदल गया है। फिर से देखें।",
       "generic": "कुछ गलत हो गया। फिर से कोशिश करें।"
+    }
+  },
+  "rent": {
+    "title": "किराये पर उपकरण",
+    "myEquipment": "मेरे उपकरण",
+    "myBookings": "आपकी बुकिंग",
+    "allKinds": "सभी",
+    "noListings": "आपके पास अभी यह उपकरण उपलब्ध नहीं है।",
+    "request": "अनुरोध",
+    "withOperator": "चालक सहित",
+    "withFuel": "ईंधन सहित",
+    "unit": {
+      "hour": "घंटा",
+      "day": "दिन",
+      "acre": "एकड़"
+    },
+    "notePlaceholder": "मालिक के लिए नोट (वैकल्पिक)",
+    "maskedHint": "जब तक दोनों साझा न करें, फ़ोन नंबर छिपे रहते हैं।",
+    "sending": "भेज रहे हैं…",
+    "sendRequest": "अनुरोध भेजें",
+    "postNeed": "ज़रूरत बताएँ",
+    "postNeedHint": "नहीं मिला? पास के मालिकों को बताएँ।",
+    "needPosted": "भेज दिया — पास के मालिक देख सकते हैं।",
+    "needHint": "यह उपकरण रखने वाले पास के मालिक आपका अनुरोध देखेंगे।",
+    "acres": "एकड़",
+    "budget": "बजट ₹",
+    "addListing": "जोड़ें",
+    "listingStatus": {
+      "active": "सक्रिय",
+      "paused": "रुका",
+      "removed": "हटाया"
+    },
+    "pause": "रोकें",
+    "resume": "फिर शुरू",
+    "remove": "हटाएँ",
+    "nearbyNeeds": "पास के किसानों को चाहिए",
+    "noNeeds": "आपके उपकरण के लिए पास में अभी कोई अनुरोध नहीं।",
+    "titlePlaceholder": "जैसे Mahindra 575 रोटावेटर सहित",
+    "ratePlaceholder": "दर ₹",
+    "cancel": "रद्द",
+    "save": "सहेजें",
+    "owner": "मालिक",
+    "renter": "किरायेदार",
+    "completedBy": "पूरा — मालिक {owner} · किरायेदार {renter}",
+    "disputePlaceholder": "क्या समस्या हुई?",
+    "action": {
+      "agree": "स्वीकार करें",
+      "decline": "अस्वीकार करें",
+      "cancel": "रद्द करें",
+      "start": "शुरू हुआ",
+      "complete": "पूरा हुआ",
+      "dispute": "समस्या बताएँ"
+    },
+    "contactTitle": "संपर्क",
+    "call": "कॉल",
+    "theyShared": "उन्होंने नंबर साझा किया। देखने के लिए अपना साझा करें।",
+    "shareMyNumber": "मेरा नंबर साझा करें",
+    "waitingForThem": "दूसरी ओर से साझा होने का इंतज़ार।",
+    "contactLater": "बुकिंग स्वीकार होने पर संपर्क खुलेगा।",
+    "rateTitle": "{name} को रेटिंग दें",
+    "submitRating": "रेटिंग दें",
+    "history": "इतिहास",
+    "by": {
+      "owner": "मालिक",
+      "renter": "किरायेदार",
+      "admin": "Agrodesk"
+    },
+    "errors": {
+      "dates_taken": "ये तारीखें पहले से बुक हैं।",
+      "already_requested": "इसके लिए आपका अनुरोध पहले से है।",
+      "too_far": "यह उपकरण आपसे बहुत दूर है।",
+      "too_many_requests": "आज बहुत अनुरोध हो गए। कल कोशिश करें।",
+      "start_in_past": "आज या बाद की तारीख चुनें।",
+      "generic": "कुछ गलत हो गया। फिर से कोशिश करें।"
+    },
+    "kind": {
+      "tractor": "ट्रैक्टर",
+      "rotavator": "रोटावेटर",
+      "cultivator": "कल्टीवेटर",
+      "plough": "हल",
+      "seed_drill": "सीड ड्रिल",
+      "harvester": "हार्वेस्टर",
+      "sprayer": "स्प्रेयर",
+      "thresher": "थ्रेशर",
+      "trolley": "ट्रॉली",
+      "baler": "बेलर",
+      "other": "अन्य"
+    },
+    "state": {
+      "requested": "अनुरोध",
+      "agreed": "मंज़ूर",
+      "declined": "अस्वीकृत",
+      "cancelled": "रद्द",
+      "in_progress": "उपयोग में",
+      "completed_by_both": "पूरा",
+      "rated": "रेटिंग दी",
+      "disputed": "विवाद",
+      "resolved": "सुलझा"
     }
   }
 }

@@ -199,7 +199,8 @@
   },
   "farmNav": {
     "home": "मुख्य",
-    "profile": "प्रोफाइल"
+    "profile": "प्रोफाइल",
+    "rent": "भाडे"
   },
   "farm": {
     "greeting": "नमस्कार, {name}",
@@ -245,6 +246,104 @@
       "too_many_requests": "आज खूप विनंत्या झाल्या. उद्या प्रयत्न करा.",
       "stale_consent_text": "परवानगीचा मजकूर बदलला आहे. पुन्हा वाचा.",
       "generic": "काहीतरी चूक झाली. पुन्हा प्रयत्न करा."
+    }
+  },
+  "rent": {
+    "title": "यंत्रे भाड्याने",
+    "myEquipment": "माझी यंत्रे",
+    "myBookings": "तुमच्या बुकिंग",
+    "allKinds": "सर्व",
+    "noListings": "तुमच्या जवळ अजून हे यंत्र उपलब्ध नाही.",
+    "request": "विनंती",
+    "withOperator": "चालकासह",
+    "withFuel": "इंधनासह",
+    "unit": {
+      "hour": "तास",
+      "day": "दिवस",
+      "acre": "एकर"
+    },
+    "notePlaceholder": "मालकासाठी टीप (ऐच्छिक)",
+    "maskedHint": "दोघांनी शेअर करेपर्यंत फोन नंबर लपलेले राहतात.",
+    "sending": "पाठवत आहे…",
+    "sendRequest": "विनंती पाठवा",
+    "postNeed": "गरज कळवा",
+    "postNeedHint": "सापडत नाही? जवळच्या मालकांना कळवा.",
+    "needPosted": "कळवले — जवळचे मालक पाहू शकतात.",
+    "needHint": "हे यंत्र असलेले जवळचे मालक तुमची विनंती पाहतील.",
+    "acres": "एकर",
+    "budget": "बजेट ₹",
+    "addListing": "जोडा",
+    "listingStatus": {
+      "active": "सक्रिय",
+      "paused": "थांबवले",
+      "removed": "काढले"
+    },
+    "pause": "थांबवा",
+    "resume": "पुन्हा सुरू",
+    "remove": "काढा",
+    "nearbyNeeds": "जवळच्या शेतकऱ्यांना हवे आहे",
+    "noNeeds": "तुमच्या यंत्रासाठी जवळ अजून विनंती नाही.",
+    "titlePlaceholder": "उदा. Mahindra 575 रोटाव्हेटरसह",
+    "ratePlaceholder": "दर ₹",
+    "cancel": "रद्द",
+    "save": "जतन करा",
+    "owner": "मालक",
+    "renter": "भाडेकरू",
+    "completedBy": "पूर्ण — मालक {owner} · भाडेकरू {renter}",
+    "disputePlaceholder": "काय अडचण आली?",
+    "action": {
+      "agree": "स्वीकारा",
+      "decline": "नाकारा",
+      "cancel": "रद्द करा",
+      "start": "सुरू झाले",
+      "complete": "पूर्ण झाले",
+      "dispute": "तक्रार करा"
+    },
+    "contactTitle": "संपर्क",
+    "call": "कॉल",
+    "theyShared": "त्यांनी नंबर शेअर केला. पाहण्यासाठी तुमचा शेअर करा.",
+    "shareMyNumber": "माझा नंबर शेअर करा",
+    "waitingForThem": "दुसऱ्या बाजूने शेअर करण्याची वाट.",
+    "contactLater": "बुकिंग स्वीकारल्यावर संपर्क उघडेल.",
+    "rateTitle": "{name} ला रेटिंग द्या",
+    "submitRating": "रेटिंग द्या",
+    "history": "इतिहास",
+    "by": {
+      "owner": "मालक",
+      "renter": "भाडेकरू",
+      "admin": "Agrodesk"
+    },
+    "errors": {
+      "dates_taken": "या तारखा आधीच बुक आहेत.",
+      "already_requested": "यासाठी तुमची विनंती आधीच आहे.",
+      "too_far": "हे यंत्र तुमच्यापासून खूप दूर आहे.",
+      "too_many_requests": "आज खूप विनंत्या झाल्या. उद्या प्रयत्न करा.",
+      "start_in_past": "आजपासूनची तारीख निवडा.",
+      "generic": "काहीतरी चूक झाली. पुन्हा प्रयत्न करा."
+    },
+    "kind": {
+      "tractor": "ट्रॅक्टर",
+      "rotavator": "रोटाव्हेटर",
+      "cultivator": "कल्टीव्हेटर",
+      "plough": "नांगर",
+      "seed_drill": "पेरणी यंत्र",
+      "harvester": "हार्वेस्टर",
+      "sprayer": "फवारणी यंत्र",
+      "thresher": "मळणी यंत्र",
+      "trolley": "ट्रॉली",
+      "baler": "बेलर",
+      "other": "इतर"
+    },
+    "state": {
+      "requested": "विनंती",
+      "agreed": "मान्य",
+      "declined": "नाकारले",
+      "cancelled": "रद्द",
+      "in_progress": "वापरात",
+      "completed_by_both": "पूर्ण",
+      "rated": "रेटिंग दिले",
+      "disputed": "वाद",
+      "resolved": "सोडवला"
     }
   }
 }

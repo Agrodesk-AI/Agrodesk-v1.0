@@ -199,7 +199,8 @@
   },
   "farmNav": {
     "home": "Home",
-    "profile": "Profile"
+    "profile": "Profile",
+    "rent": "Rent"
   },
   "farm": {
     "greeting": "Hello, {name}",
@@ -245,6 +246,104 @@
       "too_many_requests": "Too many requests today. Please try tomorrow.",
       "stale_consent_text": "The permission text changed. Please review it again.",
       "generic": "Something went wrong. Please try again."
+    }
+  },
+  "rent": {
+    "title": "Rent equipment",
+    "myEquipment": "My equipment",
+    "myBookings": "Your bookings",
+    "allKinds": "All",
+    "noListings": "No equipment listed near you for this yet.",
+    "request": "Request",
+    "withOperator": "With operator",
+    "withFuel": "With fuel",
+    "unit": {
+      "hour": "hr",
+      "day": "day",
+      "acre": "acre"
+    },
+    "notePlaceholder": "Note for the owner (optional)",
+    "maskedHint": "Phone numbers stay hidden until both of you choose to share.",
+    "sending": "Sending…",
+    "sendRequest": "Send request",
+    "postNeed": "Post a need",
+    "postNeedHint": "Can't find it? Tell owners near you.",
+    "needPosted": "Posted — nearby owners can see it.",
+    "needHint": "Nearby owners with this equipment will see your request.",
+    "acres": "acres",
+    "budget": "Budget ₹",
+    "addListing": "Add",
+    "listingStatus": {
+      "active": "Active",
+      "paused": "Paused",
+      "removed": "Removed"
+    },
+    "pause": "Pause",
+    "resume": "Resume",
+    "remove": "Remove",
+    "nearbyNeeds": "Farmers near you need",
+    "noNeeds": "No open requests near you for your equipment.",
+    "titlePlaceholder": "e.g. Mahindra 575 with rotavator",
+    "ratePlaceholder": "Rate ₹",
+    "cancel": "Cancel",
+    "save": "Save",
+    "owner": "Owner",
+    "renter": "Renter",
+    "completedBy": "Done — owner {owner} · renter {renter}",
+    "disputePlaceholder": "What went wrong?",
+    "action": {
+      "agree": "Accept",
+      "decline": "Decline",
+      "cancel": "Cancel",
+      "start": "Mark started",
+      "complete": "Mark completed",
+      "dispute": "Report a problem"
+    },
+    "contactTitle": "Contact",
+    "call": "Call",
+    "theyShared": "They shared their number. Share yours to see it.",
+    "shareMyNumber": "Share my number",
+    "waitingForThem": "Waiting for the other side to share.",
+    "contactLater": "Contact opens once the booking is accepted.",
+    "rateTitle": "Rate {name}",
+    "submitRating": "Submit rating",
+    "history": "History",
+    "by": {
+      "owner": "Owner",
+      "renter": "Renter",
+      "admin": "Agrodesk"
+    },
+    "errors": {
+      "dates_taken": "Those dates are already booked.",
+      "already_requested": "You already have a request for this.",
+      "too_far": "This equipment is too far from you.",
+      "too_many_requests": "Too many requests today. Try tomorrow.",
+      "start_in_past": "Pick a date from today onwards.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "kind": {
+      "tractor": "Tractor",
+      "rotavator": "Rotavator",
+      "cultivator": "Cultivator",
+      "plough": "Plough",
+      "seed_drill": "Seed drill",
+      "harvester": "Harvester",
+      "sprayer": "Sprayer",
+      "thresher": "Thresher",
+      "trolley": "Trolley",
+      "baler": "Baler",
+      "other": "Other"
+    },
+    "state": {
+      "requested": "Requested",
+      "agreed": "Agreed",
+      "declined": "Declined",
+      "cancelled": "Cancelled",
+      "in_progress": "In use",
+      "completed_by_both": "Completed",
+      "rated": "Rated",
+      "disputed": "Disputed",
+      "resolved": "Resolved"
     }
   }
 }

@@ -17,13 +17,17 @@ from app.models.location import (
 )
 from app.models.message import Message
 from app.models.otp import OtpCode
+from app.models.rental import (
+    EquipmentListing, RentalBooking, RentalBookingEvent, RentalNeed, RentalRating,
+)
 from app.models.routing import BuyingInterest, FarmerConsent, LeadRoute
 from app.models.outbox import OutboxItem
 from app.models.task import Task
 from app.models.user import User
 
 __all__ = [
-    "Account", "Base", "BuyingInterest", "FarmerConsent", "LeadRoute", "DealerServiceArea", "District", "Farmer", "State", "Tehsil",
+    "Account", "Base", "EquipmentListing", "RentalBooking", "RentalBookingEvent",
+    "RentalNeed", "RentalRating", "BuyingInterest", "FarmerConsent", "LeadRoute", "DealerServiceArea", "District", "Farmer", "State", "Tehsil",
     "TehsilNeighbour", "Village", "Consent", "Conversation", "Customer", "Dealer", "DealerModel",
     "JobRun", "KbChunk", "KbDocument", "Lead", "LeadEvent", "Message",
     "OtpCode", "OutboxItem", "Task", "TractorCatalogue", "User",
