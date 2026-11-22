@@ -6,6 +6,7 @@
 - Not verified: `make up` (Docker not available in the Cowork VM; run on your Windows machine with Docker Desktop).
 
 ## Done
+- Infra fix: tenant isolation was silently off locally — the API/tests connected as `agrodesk` (superuser), and superusers bypass RLS even with FORCE. Now the app, workers and tests connect as `agrodesk_app` (NOSUPERUSER NOBYPASSRLS, created by `infra/postgres/initdb/10-app-role.sh`); alembic alone uses the owner via `MIGRATIONS_DATABASE_URL`. API refuses to start on an RLS-bypassing role (`ALLOW_RLS_BYPASS_ROLE=true` opt-out, ENV=local only). Earlier "N/N green" counts were only valid under a non-superuser. Verified as app role: 70 passed, 4 failed (pre-existing `test_kb.py` float*Decimal TypeErrors).
 - F3 community feed: migration 0009 (posts, post_replies, post_helpful, content_reports, moderation_queue; counter triggers), two-layer moderation (`services/moderation.py`: script-agnostic phone block, link/UPI/scam flags, loadable blocklist, classifier protocol + Fake), locality-first ranking with district widening, reports with auto-hide at 3, admin queue + decide. PWA: Community tab (6 tabs, post cards with price display, helpful, report sheet), compose with price fields and blocked/in-review messaging, post detail with replies. 120 backend tests pass; web typecheck clean; post/blocked-phone/price/reply flow checked in browser.
 - F2 rental exchange: migration 0008 (equipment_listings, rental_needs, rental_bookings with exclusion constraint, rental_booking_events, rental_ratings + trigger gate, rental_listing_busy fn), rental_service (nearby browse, needs, state machine, masked contact, ratings, admin resolve), `/v1/rentals/*` + `/v1/admin/rentals/bookings/{id}/resolve`. PWA: Rent tab (browse + request, post a need), My equipment (listings + nearby needs), booking page (actions, share contact, rate, history). 97 backend tests pass; web typecheck clean; owner/renter flow checked in browser through contact unmasking.
 - F1 consented lead routing: migration 0007 (dealer verification + daily cap, farmer_consents, buying_interests, lead_routes, `agrodesk_guide` source, routed/re_routed/farmer_cancelled events), routing_service (ranking, business-hours SLA, sweep re-route, cancel), Celery beat every 5 min, APIs `/v1/farmer/interests*`, `/v1/dealer/service-areas`, `/v1/admin/dealers/{id}/verify|unverify`. PWA: `/farm/buy` with consent text, requests on farm home (call/WhatsApp/cancel), dealer lead list "Agrodesk Guide · Respond by". 88 backend tests pass; web typecheck clean; full flow checked in browser (Marathi farmer → Niphad dealer).
@@ -21,7 +22,6 @@
 - docs/SYSTEM_DESIGN.md written — MVP architecture, data flow, trade-offs, scale plan, assumptions.
 
 ## Next
-- **Security: run the API as a non-superuser Postgres role.** Superusers bypass RLS even with FORCE. With the default `agrodesk` superuser, 4 cross-tenant tests fail (dealer A can read dealer B's leads/users). Create a `NOSUPERUSER NOBYPASSRLS` app role, grant table privileges, point `DATABASE_URL` at it; keep the owner role only for migrations. Tests should run as that role too: `TEST_DATABASE_URL=postgresql+asyncpg://agrodesk_app:...@localhost:5433/agrodesk_test`.
 - Pre-existing: 4 `tests/test_kb.py` tests fail with `TypeError: float * decimal.Decimal` in KB search on this machine. Unrelated to F0; needs a look.
 - Load real LGD data: download state/district/sub-district CSVs (all India) and village CSVs per state from lgdirectory.gov.in, run `scripts/import_lgd.py` top-down. Verify the header aliases against the current export format on the first run.
 - Curate `tehsil_neighbours` for the pilot district first (CSV `tehsil_code,neighbour_code,rank`); every other tehsil uses the same-district fallback until curated.
@@ -41,7 +41,7 @@
 - Pick an embedding provider (OpenAI / Voyage / Cohere / self-hosted) and benchmark Marathi + Hindi retrieval before Mitra goes live.
 - At > ~10k chunks for a single dealer, migrate kb_chunks.embedding from JSONB to pgvector `vector(384)` and switch kb_service.search to SQL cosine (`<=>`).
 - Start E8 (Mitra lead agent on WhatsApp): plan first.
-- On your Windows machine: install Python 3.12+, `make up`, `cd apps/api && pip install -e ".[dev]" && alembic upgrade head && pytest`, then `python -m scripts.bootstrap_admin "+91<your-phone>" "Prasad"` to create the first platform admin.
+- On your Windows machine: install Python 3.12+, `make up` (an existing DB volume also needs `make db-roles` once), `cd apps/api && pip install -e ".[dev]"`, `make migrate migrate-test` (owner role), `make test` (app role — never run tests as `agrodesk`), then `python -m scripts.bootstrap_admin "+91<your-phone>" "Prasad"` to create the first platform admin.
 
 ## Human tasks (start day 1, in parallel)
 - [ ] Apply for WhatsApp BSP account and submit templates

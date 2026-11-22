@@ -1,11 +1,36 @@
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
+from app.core.db import assert_rls_enforced
 from app.routers import (
-    auth, catalogue, community, customers, dealers, farmer, imports, kb, leads, locations, me, rentals, routing, tasks, users,
+    auth,
+    catalogue,
+    community,
+    customers,
+    dealers,
+    farmer,
+    imports,
+    kb,
+    leads,
+    locations,
+    me,
+    rentals,
+    routing,
+    tasks,
+    users,
     webhooks,
 )
 
-app = FastAPI(title="Agrodesk API", version="0.1.0")
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    await assert_rls_enforced()
+    yield
+
+
+app = FastAPI(title="Agrodesk API", version="0.1.0", lifespan=lifespan)
 
 app.include_router(auth.router)
 app.include_router(me.router)

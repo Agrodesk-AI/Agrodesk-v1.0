@@ -7,7 +7,12 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     env: str = "local"
-    database_url: str = "postgresql+asyncpg://agrodesk:agrodesk@localhost:5432/agrodesk"
+    # Runtime role: must be NOSUPERUSER NOBYPASSRLS or tenant RLS is silently off.
+    database_url: str = "postgresql+asyncpg://agrodesk_app:agrodesk_app@localhost:5433/agrodesk"
+    # Owner role used only by alembic (DDL, extensions). Falls back to database_url.
+    migrations_database_url: str | None = None
+    # Escape hatch for the startup RLS guard; honoured only when env == "local".
+    allow_rls_bypass_role: bool = False
     redis_url: str = "redis://localhost:6379/0"
     jwt_secret: str = "change-me"
     jwt_algorithm: str = "HS256"

@@ -9,7 +9,10 @@ from app.core.config import settings
 from app.models import Base  # noqa: F401 — imports all models
 
 config = context.config
-config.set_main_option("sqlalchemy.url", settings.database_url)
+# Migrations run as the owner role (DDL, CREATE EXTENSION); the app runs as a
+# least-privileged role. See infra/postgres/initdb/10-app-role.sh.
+MIGRATIONS_URL = settings.migrations_database_url or settings.database_url
+config.set_main_option("sqlalchemy.url", MIGRATIONS_URL)
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
@@ -34,7 +37,7 @@ async def run_async_migrations() -> None:
 
 
 if context.is_offline_mode():
-    context.configure(url=settings.database_url, target_metadata=target_metadata, literal_binds=True)
+    context.configure(url=MIGRATIONS_URL, target_metadata=target_metadata, literal_binds=True)
     with context.begin_transaction():
         context.run_migrations()
 else:
