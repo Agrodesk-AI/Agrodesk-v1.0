@@ -6,12 +6,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root for `packages`
 
 os.environ.setdefault("JWT_SECRET", "test-secret")
-os.environ.setdefault(
-    "DATABASE_URL",
-    os.environ.get(
-        "TEST_DATABASE_URL",
-        "postgresql+asyncpg://agrodesk:agrodesk@localhost:5432/agrodesk_test",
-    ),
+# Tests MUST run as the least-privileged app role: a superuser (or BYPASSRLS)
+# role skips row-level security and the cross-tenant tests pass vacuously or
+# fail. TEST_DATABASE_URL wins over DATABASE_URL so a dev .env can't leak in.
+os.environ["DATABASE_URL"] = os.environ.get(
+    "TEST_DATABASE_URL",
+    "postgresql+asyncpg://agrodesk_app:agrodesk_app@localhost:5433/agrodesk_test",
 )
 
 import pytest_asyncio

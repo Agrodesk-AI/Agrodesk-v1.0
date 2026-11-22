@@ -6,6 +6,7 @@
 - Not verified: `make up` (Docker not available in the Cowork VM; run on your Windows machine with Docker Desktop).
 
 ## Done
+- Infra fix: tenant isolation was silently off locally — the API/tests connected as `agrodesk` (superuser), and superusers bypass RLS even with FORCE. Now the app, workers and tests connect as `agrodesk_app` (NOSUPERUSER NOBYPASSRLS, created by `infra/postgres/initdb/10-app-role.sh`); alembic alone uses the owner via `MIGRATIONS_DATABASE_URL`. API refuses to start on an RLS-bypassing role (`ALLOW_RLS_BYPASS_ROLE=true` opt-out, ENV=local only). Earlier "N/N green" counts were only valid under a non-superuser. Verified as app role: 70 passed, 4 failed (pre-existing `test_kb.py` float*Decimal TypeErrors).
 - E7 shipped: Knowledge base + catalogue — chunk + embed + hybrid search (Python cosine over JSONB vectors), shared/dealer scoping via RLS, expired-offer filter. 70/70 backend tests green.
 - E6 shipped: WhatsApp gateway — conversations, messages, outbox with RLS; BSP adapter interface + Fake impl; signed webhook with replay guard; outbox worker with 1m→5m→15m→1h→4h→24h retry schedule and dead-letter. 59/59 backend tests green.
 - E5 shipped: Planner with Celery beat (generate_tasks_for_due nightly, check_stale_leads daily, emit_overdue_alerts hourly), suggested-next-date rules, outcome reschedules lead + task. 46/46 backend tests green.
@@ -26,7 +27,7 @@
 - Pick an embedding provider (OpenAI / Voyage / Cohere / self-hosted) and benchmark Marathi + Hindi retrieval before Mitra goes live.
 - At > ~10k chunks for a single dealer, migrate kb_chunks.embedding from JSONB to pgvector `vector(384)` and switch kb_service.search to SQL cosine (`<=>`).
 - Start E8 (Mitra lead agent on WhatsApp): plan first.
-- On your Windows machine: install Python 3.12+, `make up`, `cd apps/api && pip install -e ".[dev]" && alembic upgrade head && pytest`, then `python -m scripts.bootstrap_admin "+91<your-phone>" "Prasad"` to create the first platform admin.
+- On your Windows machine: install Python 3.12+, `make up` (an existing DB volume also needs `make db-roles` once), `cd apps/api && pip install -e ".[dev]"`, `make migrate migrate-test` (owner role), `make test` (app role — never run tests as `agrodesk`), then `python -m scripts.bootstrap_admin "+91<your-phone>" "Prasad"` to create the first platform admin.
 
 ## Human tasks (start day 1, in parallel)
 - [ ] Apply for WhatsApp BSP account and submit templates

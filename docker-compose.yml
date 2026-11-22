@@ -5,8 +5,13 @@ services:
       POSTGRES_USER: agrodesk
       POSTGRES_PASSWORD: agrodesk
       POSTGRES_DB: agrodesk
+      APP_DB_USER: agrodesk_app
+      APP_DB_PASSWORD: agrodesk_app
     ports: ["5433:5432"]
-    volumes: [pgdata:/var/lib/postgresql/data]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Creates agrodesk_app (NOSUPERUSER NOBYPASSRLS) + agrodesk_test on first init.
+      - ./infra/postgres/initdb:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U agrodesk"]
       interval: 5s
@@ -29,7 +34,8 @@ services:
     working_dir: /app
     command: sh -c "pip install -e .[dev] && celery -A app.jobs worker -l info -Q agrodesk"
     environment:
-      DATABASE_URL: postgresql+asyncpg://agrodesk:agrodesk@db:5432/agrodesk
+      DATABASE_URL: postgresql+asyncpg://agrodesk_app:agrodesk_app@db:5432/agrodesk
+      MIGRATIONS_DATABASE_URL: postgresql+asyncpg://agrodesk:agrodesk@db:5432/agrodesk
       REDIS_URL: redis://redis:6379/0
       JWT_SECRET: change-me
     volumes:
@@ -40,7 +46,8 @@ services:
     working_dir: /app
     command: sh -c "pip install -e .[dev] && celery -A app.jobs beat -l info"
     environment:
-      DATABASE_URL: postgresql+asyncpg://agrodesk:agrodesk@db:5432/agrodesk
+      DATABASE_URL: postgresql+asyncpg://agrodesk_app:agrodesk_app@db:5432/agrodesk
+      MIGRATIONS_DATABASE_URL: postgresql+asyncpg://agrodesk:agrodesk@db:5432/agrodesk
       REDIS_URL: redis://redis:6379/0
       JWT_SECRET: change-me
     volumes:
