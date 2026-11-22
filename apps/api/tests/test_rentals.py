@@ -186,7 +186,15 @@ async def test_full_booking_lifecycle(client):
     )
     assert r.json()["state"] == "rated"
 
-    # owner's rating shows on the listing
+    # anti-gaming (design §3.7): a rating from an account < 7 days old doesn't count yet
+    r = await client.get("/v1/rentals/listings", headers=_h(renter))
+    assert r.json()[0]["owner_rating"] is None and r.json()[0]["owner_rating_count"] == 0
+    async with SessionLocal() as s, s.begin():
+        await set_tenant_context(s, dealer_id=None, is_platform_admin=True)
+        await s.execute(
+            text("UPDATE accounts SET created_at = now() - interval '30 days' WHERE phone = :p"),
+            {"p": "+919444400002"},
+        )
     r = await client.get("/v1/rentals/listings", headers=_h(renter))
     assert r.json()[0]["owner_rating"] == 5.0 and r.json()[0]["owner_rating_count"] == 1
 

@@ -25,6 +25,7 @@ export interface Listing {
   status: "active" | "paused" | "removed";
   owner_rating: number | null;
   owner_rating_count: number;
+  owner_badges: string[];
 }
 
 export interface Need {
@@ -63,6 +64,7 @@ export interface Booking {
   i_rated: boolean;
   dispute_reason: string | null;
   allowed_actions: BookingAction[];
+  other_badges: string[];
   created_at: string;
 }
 

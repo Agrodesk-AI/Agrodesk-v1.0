@@ -71,6 +71,7 @@ class ListingOut(BaseModel):
     status: str
     owner_rating: float | None = None
     owner_rating_count: int = 0
+    owner_badges: list[str] = []
 
 
 class NeedIn(BaseModel):
@@ -142,6 +143,7 @@ class BookingOut(BaseModel):
     i_rated: bool
     dispute_reason: str | None
     allowed_actions: list[str]
+    other_badges: list[str] = []
     created_at: datetime
 
 

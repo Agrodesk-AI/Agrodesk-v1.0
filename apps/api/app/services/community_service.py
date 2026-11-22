@@ -31,7 +31,7 @@ from app.schemas.community import (
     PostOut,
     ReplyOut,
 )
-from app.services import location_service, moderation
+from app.services import location_service, moderation, trust_service
 
 PAGE_SIZE = 20
 WIDEN_BELOW = 10  # first page thinner than this -> widen to the whole district
@@ -167,11 +167,13 @@ async def posts_out(
         if rows
         else set()
     )
+    badges = await trust_service.badges_for(session, {p.farmer_id for p in rows})
     return [
         PostOut(
             id=p.id,
             kind=p.kind,
             author_name=p.author_name,
+            author_badges=badges.get(p.farmer_id, []),
             is_mine=p.farmer_id == farmer.id,
             tehsil_id=p.tehsil_id,
             tehsil_name=names.get(p.tehsil_id, ""),

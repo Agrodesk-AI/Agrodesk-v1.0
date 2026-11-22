@@ -427,5 +427,21 @@
       "too_many_posts": "You've posted a lot this hour. Try again later.",
       "generic": "Something went wrong. Please try again."
     }
+  },
+  "trust": {
+    "title": "Your trust badges",
+    "none": "No badges yet. They come from completed rentals and helpful posts.",
+    "badge": {
+      "trusted_renter": "Trusted renter",
+      "helpful_neighbour": "Helpful neighbour"
+    },
+    "badgeHint": {
+      "trusted_renter": "5+ rentals completed by both sides, no open disputes",
+      "helpful_neighbour": "Posts marked helpful by many farmers nearby"
+    },
+    "rentalsProgress": "{n} of {goal} completed rentals",
+    "openDisputes": "{n} open dispute(s)",
+    "helpfulProgress": "{n} of {goal} helpful marks · from {people} of {peopleGoal} farmers",
+    "myRating": "Your rental rating: {avg} from {n} ratings (only you see this number)"
   }
 }

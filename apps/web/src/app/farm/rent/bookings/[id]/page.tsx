@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { TrustBadges } from "@/components/trust-badges";
 import { ApiError, apiJson } from "@/lib/api";
 import { fmtDateTime } from "@/lib/dates";
 import { fmtDate, type Booking, type BookingAction, type BookingEvent } from "@/lib/rentals";
@@ -64,6 +65,7 @@ export default function BookingPage() {
         <p className="text-sm text-muted">
           {b.my_role === "owner" ? t("renter") : t("owner")}: {other} · {fmtDate(b.start_date)}–{fmtDate(b.end_date)}
         </p>
+        <TrustBadges badges={b.other_badges} />
       </div>
 
       <Card className="space-y-3">

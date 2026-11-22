@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Sheet } from "@/components/ui/sheet";
+import { TrustBadges } from "@/components/trust-badges";
 import { ApiError, apiJson } from "@/lib/api";
 import {
   KINDS, fmtDate, isoDay, rupees,
@@ -112,6 +113,7 @@ export default function RentPage() {
                   <p className="text-xs text-muted">
                     {t(`kind.${l.kind}`)}{l.hp ? ` · ${l.hp} HP` : ""} · {l.owner_name} · {l.tehsil_name}
                   </p>
+                  <TrustBadges badges={l.owner_badges} />
                 </div>
                 <p className="shrink-0 font-semibold">
                   {rupees(l.rate_paise)}<span className="text-xs font-normal text-muted">/{t(`unit.${l.rate_unit}`)}</span>

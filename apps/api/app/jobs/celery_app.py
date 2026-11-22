@@ -7,7 +7,7 @@ celery_app = Celery(
     "agrodesk",
     broker=settings.redis_url,
     backend=settings.redis_url,
-    include=["app.jobs.planner", "app.jobs.outbox", "app.jobs.routing"],
+    include=["app.jobs.planner", "app.jobs.outbox", "app.jobs.routing", "app.jobs.trust"],
 )
 celery_app.conf.update(
     timezone="UTC",
@@ -35,6 +35,10 @@ celery_app.conf.beat_schedule = {
     "lead-routing-sla-every-5-minutes": {
         "task": "app.jobs.routing.process_due_routes",
         "schedule": 300.0,
+    },
+    "trust-recompute-nightly": {  # 02:15 IST
+        "task": "app.jobs.trust.recompute_all",
+        "schedule": crontab(minute=45, hour=20),
     },
     "outbox-process-every-minute": {
         "task": "app.jobs.outbox.process_pending",

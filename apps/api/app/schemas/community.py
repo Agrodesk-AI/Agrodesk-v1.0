@@ -71,6 +71,7 @@ class PostOut(BaseModel):
     id: UUID
     kind: str
     author_name: str
+    author_badges: list[str] = []
     is_mine: bool
     tehsil_id: int
     tehsil_name: str

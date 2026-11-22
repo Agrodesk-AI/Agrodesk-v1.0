@@ -41,7 +41,7 @@ from app.schemas.rental import (
     NeedIn,
     NeedOut,
 )
-from app.services import location_service
+from app.services import location_service, trust_service
 
 DAILY_NEEDS = 5
 DAILY_REQUESTS = 10
@@ -87,7 +87,7 @@ async def _rating_stats(session: AsyncSession, farmer_ids: set[UUID]) -> dict[UU
         return {}
     rows = await session.execute(
         select(RentalRating.to_farmer_id, func.avg(RentalRating.score), func.count())
-        .where(RentalRating.to_farmer_id.in_(farmer_ids))
+        .where(RentalRating.to_farmer_id.in_(farmer_ids), trust_service.rating_filter())
         .group_by(RentalRating.to_farmer_id)
     )
     return {fid: (round(float(avg), 2), n) for fid, avg, n in rows.all()}
@@ -98,6 +98,7 @@ async def listings_out(
 ) -> list[ListingOut]:
     names = await _tehsil_names(session, {r.tehsil_id for r in rows})
     stats = await _rating_stats(session, {r.owner_farmer_id for r in rows})
+    badges = await trust_service.badges_for(session, {r.owner_farmer_id for r in rows})
     out = []
     for r in rows:
         avg, n = stats.get(r.owner_farmer_id, (None, 0))
@@ -120,6 +121,7 @@ async def listings_out(
                 status=r.status,
                 owner_rating=avg,
                 owner_rating_count=n,
+                owner_badges=badges.get(r.owner_farmer_id, []),
             )
         )
     return out
@@ -366,6 +368,8 @@ async def booking_out(session: AsyncSession, b: RentalBooking, farmer_id: UUID) 
         actions.append("share_contact")
     if b.state in ("completed_by_both", "rated") and i_rated is None:
         actions.append("rate")
+    other = b.renter_farmer_id if role == "owner" else b.owner_farmer_id
+    other_badges = (await trust_service.badges_for(session, {other})).get(other, [])
     return BookingOut(
         id=b.id,
         listing_id=b.listing_id,
@@ -386,6 +390,7 @@ async def booking_out(session: AsyncSession, b: RentalBooking, farmer_id: UUID) 
         i_rated=i_rated is not None,
         dispute_reason=b.dispute_reason,
         allowed_actions=actions,
+        other_badges=other_badges,
         created_at=b.created_at,
     )
 
@@ -479,6 +484,7 @@ async def transition(
     if action not in allowed_actions(b, role, now):
         raise RentalError(f"invalid_action:{b.state}:{action}", 409)
     frm = b.state
+    completed_now = False
 
     if action == "agree":
         b.state = "agreed"
@@ -531,6 +537,7 @@ async def transition(
             b.renter_completed_at = now
         if b.owner_completed_at and b.renter_completed_at:
             b.state = "completed_by_both"
+            completed_now = True
     elif action == "dispute":
         if not note:
             raise RentalError("reason_required")
@@ -539,6 +546,10 @@ async def transition(
 
     session.add(_event(b, frm, b.state, action, farmer_id, note, now))
     await session.flush()
+    if completed_now or action == "dispute":
+        # badges reflect completions / disputes now, not only at the nightly run
+        for fid in (b.owner_farmer_id, b.renter_farmer_id):
+            await trust_service.recompute(session, fid, now)
     await session.refresh(b)
     return b
 
@@ -616,6 +627,8 @@ async def resolve(session: AsyncSession, booking_id: UUID, resolution: str) -> R
     b.resolution = resolution
     session.add(_event(b, "disputed", "resolved", "resolve", None, resolution, datetime.now(UTC)))
     await session.flush()
+    for fid in (b.owner_farmer_id, b.renter_farmer_id):
+        await trust_service.recompute(session, fid)
     await session.refresh(b)
     return b
 

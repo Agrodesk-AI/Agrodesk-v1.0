@@ -20,6 +20,7 @@ export interface Post {
   id: string;
   kind: PostKind;
   author_name: string;
+  author_badges: string[];
   is_mine: boolean;
   tehsil_id: number;
   tehsil_name: string;

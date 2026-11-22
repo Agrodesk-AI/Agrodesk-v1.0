@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ProfileSwitcher } from "@/components/profile-switcher";
+import { MyTrustCard } from "@/components/trust-badges";
 import { apiJson } from "@/lib/api";
 import { authStore } from "@/lib/auth";
 import { fmtPhone } from "@/lib/dates";
@@ -66,6 +67,7 @@ export default function FarmProfilePage() {
             ))}
           </div>
         </div>
+        <MyTrustCard />
         <ProfileSwitcher />
         <Button variant="outline" onClick={logout} className="w-full">{common("signOut")}</Button>
       </Card>

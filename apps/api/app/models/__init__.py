@@ -26,10 +26,11 @@ from app.models.rental import (
 from app.models.routing import BuyingInterest, FarmerConsent, LeadRoute
 from app.models.outbox import OutboxItem
 from app.models.task import Task
+from app.models.trust import FarmerBadge, TrustFlag
 from app.models.user import User
 
 __all__ = [
-    "Account", "Base", "ContentReport", "ModerationItem", "Post", "PostHelpful", "PostReply", "EquipmentListing", "RentalBooking", "RentalBookingEvent",
+    "Account", "Base", "FarmerBadge", "TrustFlag", "ContentReport", "ModerationItem", "Post", "PostHelpful", "PostReply", "EquipmentListing", "RentalBooking", "RentalBookingEvent",
     "RentalNeed", "RentalRating", "BuyingInterest", "FarmerConsent", "LeadRoute", "DealerServiceArea", "District", "Farmer", "State", "Tehsil",
     "TehsilNeighbour", "Village", "Consent", "Conversation", "Customer", "Dealer", "DealerModel",
     "JobRun", "KbChunk", "KbDocument", "Lead", "LeadEvent", "Message",

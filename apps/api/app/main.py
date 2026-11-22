@@ -19,6 +19,7 @@ from app.routers import (
     rentals,
     routing,
     tasks,
+    trust,
     users,
     webhooks,
 )
@@ -53,6 +54,8 @@ app.include_router(rentals.router)
 app.include_router(rentals.admin_router)
 app.include_router(community.router)
 app.include_router(community.admin_router)
+app.include_router(trust.router)
+app.include_router(trust.admin_router)
 
 
 @app.get("/health")

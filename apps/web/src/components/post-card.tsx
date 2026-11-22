@@ -7,6 +7,7 @@ import { Flag, MessageSquare, ThumbsUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Sheet } from "@/components/ui/sheet";
+import { TrustBadges } from "@/components/trust-badges";
 import { apiJson } from "@/lib/api";
 import { REPORT_REASONS, ago, type Post } from "@/lib/community";
 import { rupees } from "@/lib/rentals";
@@ -48,7 +49,7 @@ export function PostCard({ post, link = true, onChange }: {
     <>
       <div className="flex items-center justify-between gap-2 text-xs text-muted">
         <span>
-          {post.author_name} · {post.tehsil_name}
+          {post.author_name} <TrustBadges badges={post.author_badges} /> · {post.tehsil_name}
           {post.locality && post.locality !== "village" && post.locality !== "tehsil" ? ` · ${t(`locality.${post.locality}`)}` : ""}
           {" · "}{ago(post.created_at)}
         </span>

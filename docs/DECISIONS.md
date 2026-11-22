@@ -115,6 +115,15 @@
 - **Search ranking:** `0.7·(1 - cosine_distance) + 0.3·keyword_boost`. Keyword boost = 1.0 when the query substring is in the chunk text (case-insensitive).
 - **RLS proof point:** `tests/test_kb.py::test_cross_tenant_rls_isolation` probes `SELECT * FROM kb_chunks` as dealer B and asserts dealer A's private rows never appear, in addition to the usual API-level checks.
 
+## 2026-11-22: F4 trust signals (design §3.7)
+- **Badges, not numbers, in public.** Other farmers see badge chips only. Your own numbers (progress, rental rating) appear only on your profile.
+- **trusted_renter:** ≥ 5 rentals completed by both sides (either role) in 365 d AND no open disputes. **helpful_neighbour** (new, not in design): ≥ 25 helpful marks on own published posts in 365 d from ≥ 10 distinct farmers. `trusted_seller` deferred (no private-sale flow), `verified_expert` comes with Expert Q&A.
+- **Computed by code, stored with history.** `farmer_badges` rows carry awarded_by / revoked_by / reason / evidence (signals at award time). One live row per badge (partial unique index).
+- **When recomputed:** nightly beat job (02:15 IST) for every farmer touched in the window; immediately for both parties on rental completion, dispute and resolve; on every self-view of `/v1/farmer/trust` so progress and badges never disagree.
+- **Admin revoke sticks** for 90 days (system won't re-award). System revokes when a rule stops holding (e.g. open dispute).
+- **Anti-gaming:** ratings and helpful marks from accounts < 7 d old at the time don't count (rental listing rating averages too). Pairs who rated each other on ≥ 3 bookings in 90 d become an open `trust_flags` row for admin review (one open flag per pair). No automatic penalty: an admin decides.
+- **RLS:** live badges readable by any farmer; history + flags admin-only; writes admin/system only.
+
 ## 2026-11-22: F3 community feed + moderation (design §3.4, §3.8)
 - **Typed posts:** ask, need_equipment, offer_equipment, price_report, scheme_alert, experience. `price_report` requires crop + price (paise) + unit. Expiry per kind: prices 3 d, equipment 14 d, scheme alerts 30 d, others none.
 - **Ranking in Python** over ≤500 recent candidates (30-day window): `0.6·locality + 0.3·recency + 0.1·helpfulness`; locality village 1.0 / tehsil 0.7 / curated neighbour 0.4 / district 0.1; recency half-life 48 h; helpfulness capped at 20 marks. First page under 10 items widens to the whole district. No Redis cache yet (pilot volume); add per (tehsil, tab, page) 60 s when §6 trigger hits.
