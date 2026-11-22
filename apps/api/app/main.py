@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from app.routers import (
-    auth, catalogue, customers, dealers, farmer, imports, kb, leads, locations, me, rentals, routing, tasks, users,
+    auth, catalogue, community, customers, dealers, farmer, imports, kb, leads, locations, me, rentals, routing, tasks, users,
     webhooks,
 )
 
@@ -26,6 +26,8 @@ app.include_router(routing.dealer_router)
 app.include_router(routing.admin_router)
 app.include_router(rentals.router)
 app.include_router(rentals.admin_router)
+app.include_router(community.router)
+app.include_router(community.admin_router)
 
 
 @app.get("/health")

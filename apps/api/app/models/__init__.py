@@ -1,6 +1,9 @@
 from app.models.account import Account
 from app.models.base import Base
 from app.models.catalogue import TractorCatalogue
+from app.models.community import (
+    ContentReport, ModerationItem, Post, PostHelpful, PostReply,
+)
 from app.models.consent import Consent
 from app.models.conversation import Conversation
 from app.models.customer import Customer
@@ -26,7 +29,7 @@ from app.models.task import Task
 from app.models.user import User
 
 __all__ = [
-    "Account", "Base", "EquipmentListing", "RentalBooking", "RentalBookingEvent",
+    "Account", "Base", "ContentReport", "ModerationItem", "Post", "PostHelpful", "PostReply", "EquipmentListing", "RentalBooking", "RentalBookingEvent",
     "RentalNeed", "RentalRating", "BuyingInterest", "FarmerConsent", "LeadRoute", "DealerServiceArea", "District", "Farmer", "State", "Tehsil",
     "TehsilNeighbour", "Village", "Consent", "Conversation", "Customer", "Dealer", "DealerModel",
     "JobRun", "KbChunk", "KbDocument", "Lead", "LeadEvent", "Message",

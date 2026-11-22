@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Home, Tractor, User, type LucideIcon } from "lucide-react";
+import { Home, Tractor, User, Users, type LucideIcon } from "lucide-react";
 import { authStore, decodePrincipal, homeFor } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
-const items: { href: string; key: "home" | "rent" | "profile"; Icon: LucideIcon }[] = [
+const items: { href: string; key: "home" | "community" | "rent" | "profile"; Icon: LucideIcon }[] = [
   { href: "/farm", key: "home", Icon: Home },
+  { href: "/farm/community", key: "community", Icon: Users },
   { href: "/farm/rent", key: "rent", Icon: Tractor },
   { href: "/farm/profile", key: "profile", Icon: User },
 ];

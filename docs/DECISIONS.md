@@ -115,6 +115,16 @@
 - **Search ranking:** `0.7·(1 - cosine_distance) + 0.3·keyword_boost`. Keyword boost = 1.0 when the query substring is in the chunk text (case-insensitive).
 - **RLS proof point:** `tests/test_kb.py::test_cross_tenant_rls_isolation` probes `SELECT * FROM kb_chunks` as dealer B and asserts dealer A's private rows never appear, in addition to the usual API-level checks.
 
+## 2026-11-22: F3 community feed + moderation (design §3.4, §3.8)
+- **Typed posts:** ask, need_equipment, offer_equipment, price_report, scheme_alert, experience. `price_report` requires crop + price (paise) + unit. Expiry per kind: prices 3 d, equipment 14 d, scheme alerts 30 d, others none.
+- **Ranking in Python** over ≤500 recent candidates (30-day window): `0.6·locality + 0.3·recency + 0.1·helpfulness`; locality village 1.0 / tehsil 0.7 / curated neighbour 0.4 / district 0.1; recency half-life 48 h; helpfulness capped at 20 marks. First page under 10 items widens to the whole district. No Redis cache yet (pilot volume); add per (tehsil, tab, page) 60 s when §6 trigger hits.
+- **Helpful, not likes:** the count is hidden below 10. Counters (helpful, replies) are kept by SECURITY DEFINER triggers, so readers never write others' posts.
+- **Moderation layer 1 (code, always on):** Indian mobile numbers in any script's digits (normalised via `unicodedata.digit`) and blocklisted words → rejected at submit with a fixable reason. Links, UPI handles, known scam phrases → `in_review` + queue. 5 posts/h, 30 replies/h per farmer. The abuse blocklist is loaded at deploy (`moderation.load_blocklist`), not kept in the repo.
+- **Layer 2:** `ContentClassifier` protocol, `FakeClassifier` in dev. Confidence < 0.7 or provider error → queue, never auto-block (code layer is the floor).
+- **Reports:** each report queues the item (one open queue row per target, reasons merged). 3 reporters since the last human decision → auto-hide (`in_review`). Admin approve/remove closes the item with decided_by/note/time (audit).
+- **Writes in platform context** (they touch the admin-only queue); reads (feed/detail) in farmer RLS context: published or own.
+- **Not yet:** voice posts (STT adapter), real LLM classifier, warn/suspend actions, appeals, rating-ring detection, moderation admin UI.
+
 ## 2026-11-22: F2 rental exchange (design §3.5)
 - **Pull matching, not push.** Owners see open nearby needs for kinds they list (`/v1/rentals/needs/nearby`); renters browse nearby listings or a need's matches. The Celery + WhatsApp-template push in the design waits for the BSP; the per-owner daily cap applies then.
 - **"Nearby" = the F0 tehsil map** (own, curated neighbours, same-district fallback), not a per-listing `service_area` JSON. A booking outside that set is refused (`too_far`).

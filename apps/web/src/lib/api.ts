@@ -86,6 +86,7 @@ export async function api<T = unknown>(
 export const apiJson = {
   get: <T>(p: string) => api<T>(p, { method: "GET" }),
   post: <T>(p: string, body: unknown) => api<T>(p, { method: "POST", body: JSON.stringify(body) }),
+  put: <T>(p: string, body: unknown) => api<T>(p, { method: "PUT", body: JSON.stringify(body) }),
   patch: <T>(p: string, body: unknown) =>
     api<T>(p, { method: "PATCH", body: JSON.stringify(body) }),
   del: <T>(p: string) => api<T>(p, { method: "DELETE" }),

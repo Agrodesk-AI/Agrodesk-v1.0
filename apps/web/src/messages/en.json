@@ -200,7 +200,8 @@
   "farmNav": {
     "home": "Home",
     "profile": "Profile",
-    "rent": "Rent"
+    "rent": "Rent",
+    "community": "Community"
   },
   "farm": {
     "greeting": "Hello, {name}",
@@ -344,6 +345,87 @@
       "rated": "Rated",
       "disputed": "Disputed",
       "resolved": "Resolved"
+    }
+  },
+  "community": {
+    "title": "Community",
+    "newPost": "New post",
+    "empty": "Nothing near you yet. Be the first to post.",
+    "more": "Load more",
+    "helpful": "Helpful",
+    "reply": "Reply",
+    "report": "Report",
+    "reported": "Reported",
+    "reportTitle": "Why are you reporting this?",
+    "notFound": "This post is not available.",
+    "replyPlaceholder": "Write a reply…",
+    "send": "Send",
+    "post": "Post",
+    "posting": "Posting…",
+    "crop": "Crop",
+    "market": "Market (optional)",
+    "noPhoneHint": "Don't add phone numbers. Contact is shared safely inside the app.",
+    "inReviewTitle": "Sent for a quick check",
+    "inReviewBody": "Your post will appear once a moderator reviews it, usually within 24 hours.",
+    "backToFeed": "Back to community",
+    "tab": {
+      "all": "All",
+      "ask": "Questions",
+      "market": "Prices",
+      "equipment": "Equipment",
+      "alerts": "Alerts",
+      "stories": "Stories"
+    },
+    "kind": {
+      "ask": "Question",
+      "need_equipment": "Need equipment",
+      "offer_equipment": "Offer equipment",
+      "price_report": "Price",
+      "scheme_alert": "Scheme alert",
+      "experience": "Experience"
+    },
+    "placeholder": {
+      "ask": "What do you want to ask farmers near you?",
+      "need_equipment": "What equipment do you need, and when?",
+      "offer_equipment": "What equipment can you offer?",
+      "price_report": "Anything about today's rates?",
+      "scheme_alert": "Which scheme, and what's the deadline?",
+      "experience": "Share what worked (or didn't) on your farm."
+    },
+    "locality": {
+      "village": "your village",
+      "tehsil": "your tehsil",
+      "nearby": "nearby",
+      "district": "district"
+    },
+    "status": {
+      "in_review": "Under review — only you can see this",
+      "removed": "Removed by a moderator",
+      "archived": "Archived",
+      "published": ""
+    },
+    "reason": {
+      "spam": "Spam",
+      "scam": "Scam or fraud",
+      "abuse": "Abusive",
+      "wrong_info": "Wrong or harmful advice",
+      "other": "Something else"
+    },
+    "unit": {
+      "quintal": "quintal",
+      "kg": "kg",
+      "tonne": "tonne",
+      "dozen": "dozen",
+      "crate": "crate"
+    },
+    "blocked": {
+      "phone_number": "Please remove the phone number. Contact is shared safely inside the app.",
+      "blocked_word": "Please remove abusive words and try again.",
+      "other": "This can't be posted. Please edit and try again."
+    },
+    "errors": {
+      "too_many_posts": "You've posted a lot this hour. Try again later.",
+      "generic": "Something went wrong. Please try again."
     }
   }
 }
