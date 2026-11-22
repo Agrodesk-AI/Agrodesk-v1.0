@@ -92,3 +92,25 @@
 - **Opt-out keywords:** `STOP`, `STOP ALL`, `BAND`, `UNSUBSCRIBE` (Latin exact match, case-insensitive) and `रद्द`, `बंद`, `बंद करो`, `मैसेज बंद` (Devanagari contains). First-pass list — book native-speaker review before pilot.
 - **Outbox idempotency:** every outbox row carries an `idempotency_key` (unique across the table); the sent `messages` row reuses it so the adapter can safely dedupe retries at the BSP.
 - **Status updates:** webhook also accepts `{type:'status', id, status, failure_reason}` payloads and advances `messages.status`. Status ranks prevent an earlier status from overwriting a later one.
+
+## 2026-11-22: E7 KB + RAG decisions
+- **Vectors in JSONB, cosine in Python.** `kb_chunks.embedding` is `JSONB` (array of floats), the retrieval path is a plain `SELECT` + per-row `cos(q, v)` in Python. At the MVP volume (1 pilot dealer → ~1-10k chunks) this is milliseconds. The brief Part F.1 originally called for pgvector; I evaluated and chose JSONB because the production Postgres image (`pgvector/pgvector:pg16`) already covers us but the cloud CI sandbox cannot install the extension. Switch plan: when a single dealer crosses ~10k chunks, add a migration converting the column to `vector(384)`, rebuild the service search to use `<=>`, and keep the same shape of return. The service's public surface won't change.
+- **Embedding dims 384.** Default `FakeEmbeddingProvider` (deterministic SHA-based L2-normalized vectors); real vendor loaded from `EMBEDDING_PROVIDER` env. Matches the size of most small sentence-transformer / Voyage-lite / Cohere-embed-light variants. Changing dims = reindex.
+- **Chunking:** fixed character window, 800 / 100 overlap. Simple and good enough for brochures and FAQs; promote to sentence-aware when results get choppy.
+- **PDF extraction:** `pypdf`. Scanned PDFs return 422 `pdf_scanned` — OCR is a later epic.
+- **Shared vs private KB:** `dealer_id IS NULL` means shared. Read policy allows NULL OR tenant match; write policy allows platform-admin anywhere OR tenant-matched inserts only. `tractor_catalogue` is shared-read-by-all, write-by-platform-admin only (brand/model specs are platform data).
+- **Catalogue overlay (`dealer_models`):** per-dealer price range and offers, keyed `(dealer_id, catalogue_id)` unique. **Expired offers** (`valid_till < today`) are hidden from `/v1/catalogue` server-side — the shared row still appears so staff aren't confused, but `price_min`, `price_max` and `offers` fall back to empty.
+- **Search ranking:** `0.7·cosine + 0.3·keyword_boost` (keyword_boost = 1.0 if query is a substring of the chunk text, else 0). Keyword match beats pure-semantic noise when the Fake embeddings are random; real embeddings will lean more on the cosine component.
+- **RLS proof point:** `tests/test_kb.py::test_cross_tenant_rls_isolation` probes `SELECT * FROM kb_chunks` as dealer B and asserts dealer A's private rows never appear, in addition to the usual API-level 404 checks.
+
+## 2026-11-22: E7 KB + RAG decisions (pgvector)
+- **pgvector `vector(384)`.** Per brief Part F.1. Migration 0005 `CREATE EXTENSION IF NOT EXISTS vector` + column type `vector(384)`. Service search uses the `<=>` cosine-distance operator.
+- **Docker Compose** already uses `pgvector/pgvector:pg16` image → extension is pre-installed. Managed Postgres providers (AWS RDS, Supabase, Neon, etc.) all offer pgvector as an extension you enable once per DB.
+- **ANN index deferred.** For MVP we rely on sequential scan + RLS filter. When a single dealer crosses ~10k chunks, run `CREATE INDEX kb_chunks_embedding_idx ON kb_chunks USING ivfflat (embedding vector_cosine_ops) WITH (lists=100)` after a representative data load (needed for good centroid choice).
+- **Embedding dims 384** and `FakeEmbeddingProvider` (deterministic SHA-based L2-normalized vectors) for dev. Swap to a real provider via `EMBEDDING_PROVIDER` env; changing dims requires a column retype + reindex.
+- **Chunking:** 800 chars / 100 overlap. Promote to sentence-aware when quality drops.
+- **PDF extraction:** `pypdf`. Scanned PDFs return 422 `pdf_scanned` (OCR is a later epic).
+- **Shared vs private KB:** `dealer_id IS NULL` = shared. Read policy allows NULL or tenant match; writes are tenant-scoped (platform-admin to insert shared rows). `tractor_catalogue` is shared-read-all + platform-admin writes only.
+- **Catalogue overlay (`dealer_models`):** per-dealer price range and offers with `valid_till`. Expired offers (`valid_till < today`) filter out of `/v1/catalogue` server-side — the row still appears with `overlay_expired=true` and nulled prices.
+- **Search ranking:** `0.7·(1 - cosine_distance) + 0.3·keyword_boost`. Keyword boost = 1.0 when the query substring is in the chunk text (case-insensitive).
+- **RLS proof point:** `tests/test_kb.py::test_cross_tenant_rls_isolation` probes `SELECT * FROM kb_chunks` as dealer B and asserts dealer A's private rows never appear, in addition to the usual API-level checks.

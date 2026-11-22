@@ -6,6 +6,7 @@
 - Not verified: `make up` (Docker not available in the Cowork VM; run on your Windows machine with Docker Desktop).
 
 ## Done
+- E7 shipped: Knowledge base + catalogue — chunk + embed + hybrid search (Python cosine over JSONB vectors), shared/dealer scoping via RLS, expired-offer filter. 70/70 backend tests green.
 - E6 shipped: WhatsApp gateway — conversations, messages, outbox with RLS; BSP adapter interface + Fake impl; signed webhook with replay guard; outbox worker with 1m→5m→15m→1h→4h→24h retry schedule and dead-letter. 59/59 backend tests green.
 - E5 shipped: Planner with Celery beat (generate_tasks_for_due nightly, check_stale_leads daily, emit_overdue_alerts hourly), suggested-next-date rules, outcome reschedules lead + task. 46/46 backend tests green.
 - E4 shipped: POST /v1/leads/import (CSV + XLSX) with per-row validation, duplicate policies, dry-run, and error report. Frontend 3-step wizard at /leads/import. 38/38 backend tests green.
@@ -22,7 +23,9 @@
 - Run `npm run e2e:install && E2E_OWNER_FIXED_CODE=... npm run e2e` locally once a dev user is seeded, to verify the Playwright smoke test.
 - Marathi + Hindi opt-out phrases are first-pass; book a native-speaker review before pilot (`packages/channels/whatsapp/../message_service.py OPT_OUT_DEVANAGARI`).
 - Pick a BSP: Gupshup / Interakt / WATI / WhatsApp Cloud API. Start the business-account application on day 1 (open decision L.3-1).
-- Start E7 (knowledge base + RAG): plan first.
+- Pick an embedding provider (OpenAI / Voyage / Cohere / self-hosted) and benchmark Marathi + Hindi retrieval before Mitra goes live.
+- At > ~10k chunks for a single dealer, migrate kb_chunks.embedding from JSONB to pgvector `vector(384)` and switch kb_service.search to SQL cosine (`<=>`).
+- Start E8 (Mitra lead agent on WhatsApp): plan first.
 - On your Windows machine: install Python 3.12+, `make up`, `cd apps/api && pip install -e ".[dev]" && alembic upgrade head && pytest`, then `python -m scripts.bootstrap_admin "+91<your-phone>" "Prasad"` to create the first platform admin.
 
 ## Human tasks (start day 1, in parallel)

@@ -24,9 +24,6 @@ services:
       - ./apps/web:/app
     ports: ["3000:3000"]
     depends_on: [db, redis]
-
-volumes:
-  pgdata:
   worker:
     image: python:3.12-slim
     working_dir: /app
@@ -49,3 +46,6 @@ volumes:
     volumes:
       - ./apps/api:/app
     depends_on: [db, redis]
+
+volumes:
+  pgdata:

@@ -21,12 +21,16 @@ class Settings(BaseSettings):
     sms_provider: str = "fake"
     overdue_threshold_hours: int = 2
     stale_lead_days: int = 14
-
-    # WhatsApp
-    whatsapp_provider: str = "fake"  # fake | gupshup | interakt | wati | wa_cloud
+    whatsapp_provider: str = "fake"
     whatsapp_webhook_secret: str = "dev-whatsapp-secret"
     whatsapp_session_window_hours: int = 24
     outbox_max_attempts: int = 6
+    # Knowledge base
+    embedding_provider: str = "fake"  # fake | openai | voyage | cohere | …
+    embedding_dims: int = 384
+    kb_chunk_size: int = 800
+    kb_chunk_overlap: int = 100
+    kb_max_upload_bytes: int = 4 * 1024 * 1024
 
 
 @lru_cache
