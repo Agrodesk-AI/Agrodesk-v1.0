@@ -114,3 +114,7 @@
 - **Catalogue overlay (`dealer_models`):** per-dealer price range and offers with `valid_till`. Expired offers (`valid_till < today`) filter out of `/v1/catalogue` server-side — the row still appears with `overlay_expired=true` and nulled prices.
 - **Search ranking:** `0.7·(1 - cosine_distance) + 0.3·keyword_boost`. Keyword boost = 1.0 when the query substring is in the chunk text (case-insensitive).
 - **RLS proof point:** `tests/test_kb.py::test_cross_tenant_rls_isolation` probes `SELECT * FROM kb_chunks` as dealer B and asserts dealer A's private rows never appear, in addition to the usual API-level checks.
+
+## 2026-11-22: System Design v2 — two-sided app
+- See `docs/SYSTEM_DESIGN_v2.md`. Supersedes `docs/SYSTEM_DESIGN.md` on the new scope: dealer/farmer split, location hierarchy with tehsil neighbours, consented lead routing with SLA re-route, typed community feed, rental exchange state machine, subsidy rules engine, deterministic trust signals, two-layer moderation, expert Q&A queue, STT/TTS adapter pattern.
+- 12 numbered trade-offs in §5. 7 assumptions in §7 that must be validated during the pilot.
