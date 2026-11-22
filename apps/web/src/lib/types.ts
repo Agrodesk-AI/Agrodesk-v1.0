@@ -10,7 +10,8 @@ export type Stage =
   | "negotiation"
   | "won"
   | "lost";
-export type Source = "facebook" | "walk_in" | "referral" | "oem" | "other";
+// agrodesk_guide = routed from a farmer's consented buying interest; never set by hand.
+export type Source = "facebook" | "walk_in" | "referral" | "oem" | "other" | "agrodesk_guide";
 export type Score = "hot" | "warm" | "dead";
 export type TaskStatus = "pending" | "done" | "skipped";
 export type Outcome =
@@ -138,4 +139,27 @@ export interface QuickAddBody {
   campaign?: string | null;
   ad_name?: string | null;
   score?: Score | null;
+}
+
+export type InterestStatus = "routing" | "assigned" | "waitlist" | "cancelled" | "closed";
+export type Timeline = "now" | "1_3_months" | "3_6_months" | "later";
+
+export interface Interest {
+  id: string;
+  status: InterestStatus;
+  brand_hint: string | null;
+  hp_min: number | null;
+  hp_max: number | null;
+  timeline: Timeline;
+  notes: string | null;
+  reroute_count: number;
+  dealer_name: string | null;
+  dealer_phone: string | null;
+  created_at: string;
+}
+
+export interface ConsentText {
+  version: string;
+  language: string;
+  text: string;
 }

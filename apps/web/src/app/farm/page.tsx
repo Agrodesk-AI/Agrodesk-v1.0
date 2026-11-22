@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { MapPin } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { InterestList } from "@/components/interest-list";
 import { apiJson } from "@/lib/api";
 import { useLocaleCtx } from "@/lib/i18n/provider";
 import { uiLocaleFor } from "@/lib/languages";
@@ -58,6 +59,7 @@ export default function FarmHome() {
           </div>
         )}
       </Card>
+      <InterestList />
       <Card>
         <p className="font-medium">{t("comingTitle")}</p>
         <p className="text-sm text-muted">{t("comingBody")}</p>

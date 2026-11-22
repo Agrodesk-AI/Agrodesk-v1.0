@@ -16,6 +16,7 @@ import type { Customer, Lead, LeadEvent } from "@/lib/types";
 
 export default function LeadDetail() {
   const t = useTranslations("leadDetail");
+  const sourceT = useTranslations("source");
   const stageT = useTranslations("stage");
   const common = useTranslations("common");
   const { id } = useParams<{ id: string }>();
@@ -68,7 +69,7 @@ export default function LeadDetail() {
           </Badge>
         </div>
         <p className="text-sm"><span className="text-muted">{t("model")}: </span>{lead.model_interest ?? "—"}</p>
-        <p className="text-sm"><span className="text-muted">{t("source")}: </span>{lead.source}</p>
+        <p className="text-sm"><span className="text-muted">{t("source")}: </span>{sourceT(lead.source)}</p>
         <p className="text-sm"><span className="text-muted">{t("nextAt")}: </span>{fmtDateTime(lead.next_action_at)}</p>
       </Card>
 

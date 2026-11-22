@@ -51,7 +51,8 @@
     "empty": "No leads yet",
     "emptyBody": "Start by adding a lead.",
     "nextAt": "Next: {at}",
-    "noModel": "No model noted"
+    "noModel": "No model noted",
+    "respondBy": "Respond by {at}"
   },
   "quickAdd": {
     "title": "New lead",
@@ -106,7 +107,8 @@
     "walk_in": "Walk in",
     "referral": "Referral",
     "oem": "OEM",
-    "other": "Other"
+    "other": "Other",
+    "agrodesk_guide": "Agrodesk Guide"
   },
   "score": {
     "hot": "Hot",
@@ -121,7 +123,10 @@
     "note": "Note",
     "call_made": "Call",
     "task_completed": "Task completed",
-    "opted_out": "Opted out"
+    "opted_out": "Opted out",
+    "routed": "Routed from Agrodesk Guide",
+    "re_routed": "Re-routed (no response in time)",
+    "farmer_cancelled": "Farmer cancelled"
   },
   "nextActionPreset": {
     "today6pm": "Today 6pm",
@@ -201,6 +206,45 @@
     "nearbyTehsils": "Nearby tehsils",
     "sameDistrict": "Other tehsils in your district",
     "comingTitle": "More coming soon",
-    "comingBody": "Rentals, subsidies, prices and your local community will appear here."
+    "comingBody": "Rentals, subsidies, prices and your local community will appear here.",
+    "buyCta": "Buying a tractor?",
+    "buyCtaBody": "We'll connect you with a verified dealer near you.",
+    "myRequests": "Your requests",
+    "status": {
+      "routing": "Finding a dealer…",
+      "assigned": "Dealer will contact you",
+      "waitlist": "No dealer available yet — we'll keep looking",
+      "cancelled": "Cancelled",
+      "closed": "Closed"
+    },
+    "call": "Call",
+    "whatsapp": "WhatsApp",
+    "cancel": "Cancel request",
+    "anyBrand": "Any brand"
+  },
+  "buy": {
+    "title": "Buying a tractor",
+    "brand": "Brand (optional)",
+    "brandPlaceholder": "e.g. Mahindra",
+    "hp": "Horsepower",
+    "hpAny": "Not sure",
+    "when": "When do you want to buy?",
+    "timeline": {
+      "now": "Now",
+      "1_3_months": "1–3 months",
+      "3_6_months": "3–6 months",
+      "later": "Later"
+    },
+    "notes": "Anything else? (optional)",
+    "consentTitle": "Your permission",
+    "agree": "I agree",
+    "submit": "Find me a dealer",
+    "sending": "Sending…",
+    "errors": {
+      "already_open": "You already have an open request for this brand.",
+      "too_many_requests": "Too many requests today. Please try tomorrow.",
+      "stale_consent_text": "The permission text changed. Please review it again.",
+      "generic": "Something went wrong. Please try again."
+    }
   }
 }

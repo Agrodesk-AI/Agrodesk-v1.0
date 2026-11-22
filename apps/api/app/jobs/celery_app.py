@@ -7,7 +7,7 @@ celery_app = Celery(
     "agrodesk",
     broker=settings.redis_url,
     backend=settings.redis_url,
-    include=["app.jobs.planner", "app.jobs.outbox"],
+    include=["app.jobs.planner", "app.jobs.outbox", "app.jobs.routing"],
 )
 celery_app.conf.update(
     timezone="UTC",
@@ -30,6 +30,11 @@ celery_app.conf.beat_schedule = {
     "emit-overdue-hourly": {
         "task": "app.jobs.planner.emit_overdue_alerts",
         "schedule": crontab(minute=35, hour="2-15"),
+    },
+    # Sweep, not per-lead ETA tasks: survives worker restarts, idempotent, SKIP LOCKED.
+    "lead-routing-sla-every-5-minutes": {
+        "task": "app.jobs.routing.process_due_routes",
+        "schedule": 300.0,
     },
     "outbox-process-every-minute": {
         "task": "app.jobs.outbox.process_pending",

@@ -52,6 +52,14 @@ class BadFieldValue(LeadError):
     pass
 
 
+async def _routing_responded(session: AsyncSession, lead: Lead) -> None:
+    """A staff action on a routed lead stops its re-route SLA clock."""
+    if lead.source == "agrodesk_guide":
+        from app.services.routing_service import mark_responded  # avoid import cycle
+
+        await mark_responded(session, lead)
+
+
 def _write_event(
     session: AsyncSession,
     *,
@@ -245,6 +253,7 @@ async def transition(
 
     lead.stage = data.to_stage
     await session.flush()
+    await _routing_responded(session, lead)
 
     ev = _write_event(
         session,
@@ -307,6 +316,7 @@ async def add_event(
         actor_id=actor_user_id,
     )
     await session.flush()
+    await _routing_responded(session, lead)
     return ev
 
 

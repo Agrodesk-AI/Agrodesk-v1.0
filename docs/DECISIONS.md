@@ -115,6 +115,17 @@
 - **Search ranking:** `0.7·(1 - cosine_distance) + 0.3·keyword_boost`. Keyword boost = 1.0 when the query substring is in the chunk text (case-insensitive).
 - **RLS proof point:** `tests/test_kb.py::test_cross_tenant_rls_isolation` probes `SELECT * FROM kb_chunks` as dealer B and asserts dealer A's private rows never appear, in addition to the usual API-level checks.
 
+## 2026-11-22: F1 consented lead routing (design §3.3)
+- **Re-route via sweep, not per-lead ETA tasks.** Celery beat runs `process_due_routes` every 5 min with `SELECT … FOR UPDATE SKIP LOCKED`. Survives worker restarts, idempotent, worst-case 5 min late.
+- **SLA = 4 business hours** in the dealer's `business_hours` (`{"mon": ["09:00","19:00"], …, "sun": null}`, IST; default Mon–Sat 9–19). An all-closed or broken schedule falls back to the default so SLAs can't stall forever.
+- **"Responded" = any staff action** on the routed lead: stage transition or a call/note/opt-out event. PATCH edits don't count.
+- **Ranking:** nearest service tehsil (own, curated neighbour, same-district fallback) → home-tehsil match → 90-day response rate (new dealers start at 0.5 until 3 routes) → capacity left today (`routing_daily_cap`, default 20). Only `verified_at IS NOT NULL` + active dealers. Brand match is case-insensitive exact on `dealers.brands`; no brand = any.
+- **Candidates fixed at creation** (top 4 = 1 + max 3 re-routes). Re-checked for verification at each hand-off. Exhausted → `waitlist`.
+- **On re-route** the old dealer's lead goes `lost` (`rerouted_sla`) with a `re_routed` timeline event and tasks skipped. No WhatsApp notice to the dealer yet.
+- **Consent:** server-held versioned texts (en/hi/mr reviewed-pending; other languages get English and the response says so). Client sends version + language; server stores its own text. Changing wording = new version. App flow requires consent_granted=true; recording a "NO" will come with the WhatsApp Guide.
+- **Anti-abuse:** 3 interests / farmer / 24 h; one open interest per brand. Phone-reputation (Lookup-style) checks still TODO.
+- **Cross-tenant writes run in platform context** with explicit ownership checks (same pattern as onboarding). Farmer sees the dealer via a snapshot on the interest (business name + public WhatsApp number), never by reading dealer tables.
+
 ## 2026-11-22: F0 farmer foundation (all-India)
 - **Scope is all of India**, not the pilot tehsil. Location PKs = LGD codes; names in `names` JSONB keyed by language; loaded from LGD CSVs via `scripts/import_lgd.py`. No geography hard-coded in migrations.
 - **Language fallback for place names:** exact language, else untagged local name if same script, else English. Importer auto-tags unambiguous scripts (Tamil→ta, Telugu→te, …); `--local-lang` only applies to names in that language's script, so a multi-state file can't mislabel.

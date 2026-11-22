@@ -6,6 +6,7 @@
 - Not verified: `make up` (Docker not available in the Cowork VM; run on your Windows machine with Docker Desktop).
 
 ## Done
+- F1 consented lead routing: migration 0007 (dealer verification + daily cap, farmer_consents, buying_interests, lead_routes, `agrodesk_guide` source, routed/re_routed/farmer_cancelled events), routing_service (ranking, business-hours SLA, sweep re-route, cancel), Celery beat every 5 min, APIs `/v1/farmer/interests*`, `/v1/dealer/service-areas`, `/v1/admin/dealers/{id}/verify|unverify`. PWA: `/farm/buy` with consent text, requests on farm home (call/WhatsApp/cancel), dealer lead list "Agrodesk Guide · Respond by". 88 backend tests pass; web typecheck clean; full flow checked in browser (Marathi farmer → Niphad dealer).
 - F0 farmer foundation (all-India): migration 0006 (states/districts/tehsils/villages keyed by LGD code, tehsil_neighbours, dealer_service_areas, accounts, farmers + RLS), LGD CSV importer `scripts/import_lgd.py`, account→profiles auth (staff | farmer | account tokens, switch-profile, profiles list), `/v1/farmer/onboard|me`, `/v1/locations/*` incl. nearby with same-district fallback, admin neighbour edit. PWA: `/onboarding` (13 languages, state→district→tehsil→village picker), `/farm` home + profile, profile switcher on both sides. 75 backend tests pass (run as a non-superuser role); web typecheck + build clean; flow checked in browser (Tamil farmer onboarding).
 - E7 shipped: Knowledge base + catalogue — chunk + embed + hybrid search (Python cosine over JSONB vectors), shared/dealer scoping via RLS, expired-offer filter. 70/70 backend tests green.
 - E6 shipped: WhatsApp gateway — conversations, messages, outbox with RLS; BSP adapter interface + Fake impl; signed webhook with replay guard; outbox worker with 1m→5m→15m→1h→4h→24h retry schedule and dead-letter. 59/59 backend tests green.
@@ -24,7 +25,9 @@
 - Curate `tehsil_neighbours` for the pilot district first (CSV `tehsil_code,neighbour_code,rank`); every other tehsil uses the same-district fallback until curated.
 - UI catalogs exist only for en/mr/hi; other farmer languages get English chrome with native place names. Add catalogs (gu, pa, bn, ta, te, kn, ml, or, as, ur) with native-speaker review.
 - New mr/hi strings (onboarding, farm, profiles, location) are machine-authored — include in the native-speaker pass.
-- Dealer service areas: table exists; no API yet. Add owner endpoint before lead routing (§3.3).
+- Dealer service areas: API done (`PUT /v1/dealer/service-areas`, owner only); no dealer UI yet. Admin verify has no UI either.
+- Lead routing gaps: no WhatsApp notice to farmer on assignment / to dealer on re-route; dealer win/loss doesn't close the farmer's interest (dealer context can't write farmer rows: needs a system hook); declined consent not recorded from the app; phone-reputation anti-abuse not done.
+- Consent texts (en/hi/mr) need legal + native-speaker review before pilot.
 - Run `make up` locally with Docker Desktop to finish E0 "done when".
 - Put `AGRODESK_PROJECT.md` at repo root (copy from the Claude Project).
 - Marathi / Hindi translations are machine-authored; book a native-speaker pass on src/messages/{mr,hi}.json before pilot.

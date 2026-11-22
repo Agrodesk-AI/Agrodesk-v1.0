@@ -17,6 +17,7 @@ const STAGES: Stage[] = ["new", "contacted", "qualified", "visit_planned", "nego
 export default function LeadsPage() {
   const t = useTranslations("leads");
   const stageT = useTranslations("stage");
+  const sourceT = useTranslations("source");
   const scoreT = useTranslations("score");
   const common = useTranslations("common");
   const [stage, setStage] = useState<Stage | null>(null);
@@ -76,7 +77,10 @@ export default function LeadsPage() {
                 <div className="min-w-0">
                   <p className="truncate font-medium">{l.model_interest ?? t("noModel")}</p>
                   <p className="text-xs text-muted">
-                    {l.source} · {t("nextAt", { at: fmtDateTime(l.next_action_at) })}
+                    {sourceT(l.source)} ·{" "}
+                    {l.source === "agrodesk_guide" && l.stage === "new"
+                      ? t("respondBy", { at: fmtDateTime(l.next_action_at) })
+                      : t("nextAt", { at: fmtDateTime(l.next_action_at) })}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">

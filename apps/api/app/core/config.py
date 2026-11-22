@@ -31,6 +31,11 @@ class Settings(BaseSettings):
     kb_chunk_size: int = 800
     kb_chunk_overlap: int = 100
     kb_max_upload_bytes: int = 4 * 1024 * 1024
+    # Lead routing (design §3.3)
+    lead_routing_sla_hours: float = 4.0  # business hours before re-route
+    lead_routing_max_reroutes: int = 3
+    lead_routing_candidates: int = 4  # ranked list kept per interest
+    farmer_interest_daily_limit: int = 3
 
 
 @lru_cache
